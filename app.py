@@ -242,63 +242,63 @@ def submit_readequacao():
                                 })
                             
                             # Create a multipart form-data request with the file as Monday.com expects
-            files = {
-                'operations': (None, operations, 'application/json'),
-                'map': (None, map_json, 'application/json'),
-                '0': (filename, f, file.content_type)
-            }
-    
-            headers = {
-                'Authorization': API_KEY
-            }
-    
-            logger.info(f"Sending file upload request with Monday.com's expected format")
-            logger.info(f"URL: {api_url}")
-            logger.info(f"Operations: {operations}")
-            logger.info(f"Map: {map_json}")
-            logger.info(f"File keys: {files.keys()}")
-    
-            response = requests.post(
-                api_url,
-                headers=headers,
-                files=files
-            )
-            finally:
-            # Optional: Clean up the file from the assets folder after attempting upload
-            # try:
-            #     if os.path.exists(local_filepath):
-            #         os.remove(local_filepath)
-            # except Exception as e:
-            #     logger.error(f"Error removing file from assets: {str(e)}")
-            pass # Keep the file for now
-    
-            response_data = response.json() if response.text else {}
-    
-            if response.status_code == 200 and not response_data.get('errors'):
-            logger.info(f"File uploaded successfully: {response_data}")
-            flash("Dados e arquivo atualizados com sucesso!", "success")
-            else:
-            error_details = response_data.get('errors', [{'message': 'Unknown error'}])[0].get('message', 'Unknown error')
-            logger.error(f"File upload failed (Status: {response.status_code}): {error_details}")
-            logger.error(f"Full response: {response.text}")
-            flash(f"Dados atualizados, mas falha ao enviar arquivo! {error_details}", "warning")
-    
-            except Exception as e:
-            logger.error(f"Error saving and uploading file: {str(e)}")
-            flash(f"Dados atualizados, mas erro ao enviar arquivo: {str(e)}", "warning")
-            else:
-            flash("Dados atualizados com sucesso!", "success")
-    
-            return render_template('success.html', item_id=item_id, result_name=result_name)
-            else:
-            flash("Falha ao atualizar dados no Monday.com", "danger")
-            logger.error("Failed to update item in Monday.com")
-            return render_template('error.html', error="Falha ao atualizar dados no Monday.com")
-    
-            except Exception as e:
-            logger.error(f"Error in submit_readequacao: {str(e)}")
-            flash(f"Erro ao processar o formulário: {str(e)}", "danger")
-            return render_template('error.html', error=str(e))
+                            files = {
+                                'operations': (None, operations),
+                                'map': (None, map_json),
+                                '0': (filename, f, file.content_type)
+                            }
+                            
+                            headers = {
+                                'Authorization': API_KEY  # Only authorization, let requests set the content type
+                            }
+                            
+                            logger.info(f"Sending file upload request with Monday.com's expected format")
+                            logger.info(f"URL: {api_url}")
+                            logger.info(f"Operations: {operations}")
+                            logger.info(f"Map: {map_json}")
+                            logger.info(f"File keys: {files.keys()}")
+                            
+                            # Make a simple POST request with file data
+                            response = requests.post(
+                                api_url,
+                                headers=headers,
+                                files=files
+                            )
+                    finally:
+                        # Always clean up the temporary file
+                        try:
+                            if os.path.exists(temp_filepath):
+                                os.remove(temp_filepath)
+                        except Exception as e:
+                            logger.error(f"Error removing temporary file: {str(e)}")
+                    
+                    response_data = response.json() if response.text else {}
+                    
+                    if response.status_code == 200 and not response_data.get('errors'):
+                        logger.info(f"File uploaded successfully: {response_data}")
+                        flash("Dados e arquivo atualizados com sucesso!", "success")
+                    else:
+                        error_details = response_data.get('errors', [{'message': 'Unknown error'}])[0].get('message', 'Unknown error')
+                        logger.error(f"File upload failed (Status: {response.status_code}): {error_details}")
+                        logger.error(f"Full response: {response.text}")
+                        flash(f"Dados atualizados, mas falha ao enviar arquivo! {error_details}", "warning")
+                        
+                except Exception as e:
+                    logger.error(f"Error uploading file: {str(e)}")
+                    flash(f"Dados atualizados, mas erro ao enviar arquivo: {str(e)}", "warning")
+            else:
+                flash("Dados atualizados com sucesso!", "success")
+                
+            return render_template('success.html', item_id=item_id, result_name=result_name)
+        else:
+            flash("Falha ao atualizar dados no Monday.com", "danger")
+            logger.error("Failed to update item in Monday.com")
+            return render_template('error.html', error="Falha ao atualizar dados no Monday.com")
+            
+    except Exception as e:
+        logger.error(f"Error in submit_readequacao: {str(e)}")
+        flash(f"Erro ao processar o formulário: {str(e)}", "danger")
+        return render_template('error.html', error=str(e))
     
 @app.errorhandler(413)
 def request_entity_too_large(error):
