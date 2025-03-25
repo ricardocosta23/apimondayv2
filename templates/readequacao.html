@@ -1,0 +1,372 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h3><i class="fas fa-search me-2"></i>Buscar Negócio</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('readequacao') }}" class="row g-3">
+            <div class="col-md-6">
+                <label for="negocio" class="form-label">Número do Negócio</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="negocio" name="negocio" placeholder="Digite o número do negócio" required>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if result %}
+<div class="card shadow mt-4">
+    <div class="card-header bg-success text-white">
+        <h3><i class="fas fa-edit me-2"></i>Readequação de Dados</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('submit_readequacao') }}" enctype="multipart/form-data">
+            <input type="hidden" name="item_id" value="{{ result.item_id }}">
+            <input type="hidden" name="result_name" value="{{ result.name }}">
+            
+            <div class="row mb-4">
+                <div class="col-md-12 mb-3">
+                    <div class="card bg-dark">
+                        <div class="card-header">
+                            Informações do Negócio
+                        </div>
+                        <div class="card-body">
+                            <h4 class="mb-3">{{ result.name|replace_none }}</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <p><strong>Número do Negócio:</strong> {{ result.texto0__1|replace_none }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Status:</strong> {{ result.lista_suspensa3__1|replace_none }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AÉREO date fields in one row -->
+                <div class="col-md-12 mb-3">
+                    <div class="card bg-dark">
+                        <div class="card-header">
+                            Datas de Entrega (AÉREO)
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Data de Entrega Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.data__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaDataEntregaAEREO" class="form-label">Nova Data de Entrega</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control flatpickr-date" id="novaDataEntregaAEREO" name="novaDataEntregaAEREO" placeholder="DD/MM/AAAA">
+                                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TERRESTRE date fields in one row -->
+                <div class="col-md-12 mb-3">
+                    <div class="card bg-dark">
+                        <div class="card-header">
+                            Datas de Entrega (TERRESTRE)
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Data de Entrega Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.date9__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaDataEntregaTERRESTRE" class="form-label">Nova Data de Entrega</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control flatpickr-date" id="novaDataEntregaTERRESTRE" name="novaDataEntregaTERRESTRE" placeholder="DD/MM/AAAA">
+                                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CRIAÇÃO date fields in one row -->
+                <div class="col-md-12 mb-3">
+                    <div class="card bg-dark">
+                        <div class="card-header">
+                            Datas de Entrega (CRIAÇÃO)
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Data de Entrega Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.date3__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaDataEntregaCRIACAO" class="form-label">Nova Data de Entrega</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control flatpickr-date" id="novaDataEntregaCRIACAO" name="novaDataEntregaCRIACAO" placeholder="DD/MM/AAAA">
+                                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SALES date fields in one row -->
+                <div class="col-md-12 mb-3">
+                    <div class="card bg-dark">
+                        <div class="card-header">
+                            Datas de Entrega (SALES)
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Data de Entrega Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.date7__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaDataEntregaSALES" class="form-label">Nova Data de Entrega</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control flatpickr-date" id="novaDataEntregaSALES" name="novaDataEntregaSALES" placeholder="DD/MM/AAAA">
+                                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opção 1A -->
+                <div class="col-md-12 mb-3">
+                    <div class="card bg-dark">
+                        <div class="card-header">
+                            <h5 class="mb-0 text-white">Opção 1A</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 1A Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.texto16__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao1A" class="form-label">Nova Opção 1A</label>
+                                        <input type="text" class="form-control" id="novaOpcao1A" name="novaOpcao1A">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opção 2A -->
+                <div class="col-md-12 mb-3">
+                    <div class="card bg-dark">
+                        <div class="card-header">
+                            <h5 class="mb-0 text-white">Opção 2A</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 2A Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_1c0__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao2A" class="form-label">Nova Opção 2A</label>
+                                        <input type="text" class="form-control" id="novaOpcao2A" name="novaOpcao2A">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opção 3A -->
+                <div class="col-md-12 mb-3">
+                    <div class="card bg-dark">
+                        <div class="card-header">
+                            <h5 class="mb-0 text-white">Opção 3A</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 3A Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_2c__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao3A" class="form-label">Nova Opção 3A</label>
+                                        <input type="text" class="form-control" id="novaOpcao3A" name="novaOpcao3A">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opção 4A -->
+                <div class="col-md-12 mb-3">
+                    <div class="card bg-dark">
+                        <div class="card-header">
+                            <h5 class="mb-0 text-white">Opção 4A</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 4A Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_3c9__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao4A" class="form-label">Nova Opção 4A</label>
+                                        <input type="text" class="form-control" id="novaOpcao4A" name="novaOpcao4A">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <div class="form-group mb-3">
+                        <label for="file" class="form-label">Anexar Documento (opcional)</label>
+                        <input type="file" class="form-control" id="file" name="file">
+                        <small class="form-text text-muted">Formatos aceitos: PDF, DOC, DOCX, XLS, XLSX, TXT, CSV, PNG, JPG, JPEG. Tamanho máximo: 16MB.</small>
+                    </div>
+                </div>
+
+                <!-- Resumo de mudanças section -->
+                <div class="col-md-12 mt-4">
+                    <div class="card bg-light">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Resumo das Mudanças</h4>
+                        </div>
+                        <div class="card-body" id="resumo-mudancas-conteudo">
+                            <!-- Hidden inputs to store original values -->
+                            <input type="hidden" name="original_data__1" value="{{ result.data__1 or '' }}">
+                            <input type="hidden" name="original_date3__1" value="{{ result.date3__1 or '' }}">
+                            <input type="hidden" name="original_date9__1" value="{{ result.date9__1 or '' }}">
+                            <input type="hidden" name="original_date7__1" value="{{ result.date7__1 or '' }}">
+                            <input type="hidden" name="original_texto16__1" value="{{ result.texto16__1 or '' }}">
+                            <input type="hidden" name="original_dup__of_op__o_1c0__1" value="{{ result.dup__of_op__o_1c0__1 or '' }}">
+                            <input type="hidden" name="original_dup__of_op__o_2c__1" value="{{ result.dup__of_op__o_2c__1 or '' }}">
+                            <input type="hidden" name="original_dup__of_op__o_3c9__1" value="{{ result.dup__of_op__o_3c9__1 or '' }}">
+                            
+                            <p id="resumo-data__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Data de entrega do AÉREO foi alterada de 
+                                <span id="original-data__1" class="badge bg-secondary">{{ result.data__1 if result.data__1 is defined and result.data__1 != None and result.data__1 != "" else ' - ' }}</span> para 
+                                <span id="nova-data__1" class="badge bg-primary"></span>
+                            </p>
+                            
+                            <p id="resumo-date3__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Data de entrega do TERRESTRE foi alterada de 
+                                <span id="original-date3__1" class="badge bg-secondary">{{ result.date3__1 if result.date3__1 is defined and result.date3__1 != None and result.date3__1 != "" else ' - ' }}</span> para 
+                                <span id="nova-date3__1" class="badge bg-primary"></span>
+                            </p>
+                            
+                            <p id="resumo-date9__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Data de entrega da CRIAÇÃO foi alterada de 
+                                <span id="original-date9__1" class="badge bg-secondary">{{ result.date9__1 if result.date9__1 is defined and result.date9__1 != None and result.date9__1 != "" else ' - ' }}</span> para 
+                                <span id="nova-date9__1" class="badge bg-primary"></span>
+                            </p>
+                            
+                            <p id="resumo-date7__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Data de entrega do SALES foi alterada de 
+                                <span id="original-date7__1" class="badge bg-secondary">{{ result.date7__1 if result.date7__1 is defined and result.date7__1 != None and result.date7__1 != "" else ' - ' }}</span> para 
+                                <span id="nova-date7__1" class="badge bg-primary"></span>
+                            </p>
+                            
+                            <p id="resumo-texto16__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Opção 1A foi alterada de 
+                                <span id="original-texto16__1" class="badge bg-secondary">{{ result.texto16__1 if result.texto16__1 is defined and result.texto16__1 != None and result.texto16__1 != "" else ' - ' }}</span> para 
+                                <span id="nova-texto16__1" class="badge bg-primary"></span>
+                            </p>
+                            
+                            <p id="resumo-dup__of_op__o_1c0__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Opção 2A foi alterada de 
+                                <span id="original-dup__of_op__o_1c0__1" class="badge bg-secondary">{{ result.dup__of_op__o_1c0__1 if result.dup__of_op__o_1c0__1 is defined and result.dup__of_op__o_1c0__1 != None and result.dup__of_op__o_1c0__1 != "" else ' - ' }}</span> para 
+                                <span id="nova-dup__of_op__o_1c0__1" class="badge bg-primary"></span>
+                            </p>
+                            
+                            <p id="resumo-dup__of_op__o_2c__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Opção 3A foi alterada de 
+                                <span id="original-dup__of_op__o_2c__1" class="badge bg-secondary">{{ result.dup__of_op__o_2c__1 if result.dup__of_op__o_2c__1 is defined and result.dup__of_op__o_2c__1 != None and result.dup__of_op__o_2c__1 != "" else ' - ' }}</span> para 
+                                <span id="nova-dup__of_op__o_2c__1" class="badge bg-primary"></span>
+                            </p>
+                            
+                            <p id="resumo-dup__of_op__o_3c9__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Opção 4A foi alterada de 
+                                <span id="original-dup__of_op__o_3c9__1" class="badge bg-secondary">{{ result.dup__of_op__o_3c9__1 if result.dup__of_op__o_3c9__1 is defined and result.dup__of_op__o_3c9__1 != None and result.dup__of_op__o_3c9__1 != "" else ' - ' }}</span> para 
+                                <span id="nova-dup__of_op__o_3c9__1" class="badge bg-primary"></span>
+                            </p>
+                            
+                            <p id="sem-mudancas" class="text-muted font-italic">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Nenhuma alteração realizada. Modifique os campos para ver o resumo das mudanças.
+                            </p>
+                            
+                            <p class="text-end text-muted small mt-3">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Os campos não listados acima permanecerão inalterados
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save me-1"></i> Salvar Alterações
+                </button>
+                <a href="{{ url_for('readequacao') }}" class="btn btn-secondary">
+                    <i class="fas fa-times me-1"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

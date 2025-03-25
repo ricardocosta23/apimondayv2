@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Readequação</title>
+    <style>
+        body {
+            background-color: #ccdceb;         
+            background-size: cover;
+            background-repeat: no-repeat; 
+            background-position: center; 
+            color: black;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 20px;
+            font-size: 16px;
+            position: relative; /* Increased font size */    
+        }
+        h1, h2 {
+            color: black;
+            text-align: center;
+            font-size: 2em;
+        }
+        .result-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            align-items: center;
+            margin-bottom: 10px;
+            width: 80%;
+
+        .container h2 {
+            margin: 0; /* Remove default margins */
+            padding: 2em; /* Remove default padding */
+        }
+            
+            
+              
+            
+        }
+        .result-item label {
+            grid-column: 2;
+            text-align: left;
+            padding-right: 10px;
+            border: 0;
+        }
+        .result-item span {
+            grid-column: 3;
+            text-align: left;
+        }
+        .result-item input {
+            grid-column: 4;
+            text-align: left;
+            height: 30px
+            border: 0;
+        }
+        .result-item mudanca1 {
+            grid-column: 2;
+            text-align: left;
+            height: 40px;
+            font-size: 22px
+            
+        }
+        .result-item mudanca2 {
+            grid-column: 3;
+            text-align: left;
+            height: 40px;
+            font-size: 22px
+        }
+        .result-item mudanca3 {
+            grid-column: 4;
+            text-align: left;
+            height: 40px;
+            font-size: 22px
+        }
+        .buscar-button {
+            appearance: none;
+            background-color: #ffff;
+            border: 2px solid #ffff;
+            border-radius: 15px;
+            box-sizing: border-box;
+            color: #3B3B3B;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            font-size: 16px;
+            font-weight: 600;
+            line-height: normal;
+            margin: 0 ;
+            min-height: 40px;
+            min-width: 0;
+            outline: none;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            width: 100%;
+            grid-column: 3; /* O botão ocupa a terceira coluna */
+            justify-self: center;
+            will-change: transform;
+            
+        }
+        .container {
+          max-width: 102em;
+          padding: 1em 30em 2em 30em;
+          margin: 0em auto;
+          background-color: #E8E8E8;
+          border-radius: 4.2px;
+          box-shadow: 0px 3px 10px -2px rgba(0, 0, 0, 0.2);
+        }
+
+        .buscar-button:hover {
+            color: #3B3B3B;
+            background-color: #d7d8db;
+            border: 2px solid #d7d8db;
+            border-radius: 15px;
+
+            box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+            transform: translateY(-2px);
+        }
+
+        #numero-negocio {
+            text-align: center;
+            display: block; /* Garante que a label ocupe toda a largura disponível */
+        }
+        
+        #drop-area {
+            border: 2px dashed #ccc;
+            padding: 50px;
+            text-align: center;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        #file-upload-container {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        #submit-button-container {
+            margin-top: 20px;
+            text-align: center;
+            
+        }
+
+        #red-layer {
+            position: absolute;
+            width: 66.66%; /* 2/3 da largura da página */
+            background-color: red;
+            z-index: 0;
+            opacity: 0.2;
+            margin: 50px auto 0 auto; /* Margem superior e centralização horizontal */
+        }
+
+
+        
+        #submit-button-container button {
+            appearance: none;
+            background-color: #ffff;
+            border: 2px solid #ffff;
+            border-radius: 15px;
+            box-sizing: border-box;
+            color: #3B3B3B;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            font-size: 16px;
+            font-weight: 600;
+            line-height: normal;
+            margin: 0;
+            min-height: 60px;
+            min-width: 0;
+            outline: none;
+            padding: 16px 24px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            width: 100%;
+            will-change: transform;
+        }
+
+        #submit-button-container button:hover {
+            color: #3B3B3B;
+            background-color: #d7d8db;
+            border: 2px solid #d7d8db;
+            border-radius: 15px;
+            box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+            transform: translateY(-2px);
+        }
+
+        #submit-button-container button:disabled {
+            pointer-events: none;
+        }
+
+        #submit-button-container button:active {
+            box-shadow: none;
+            transform: translateY(0);
+        }
+
+
+            
+        
+        #response-message {
+            margin-top: 20px;
+            color: yellow;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        function formatDate(dateString) {
+            if (!dateString) return "";
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `<span class="math-inline">\{day\}/</span>{month}/${year}`;
+        }
+    </script>
+</head>
+<body>
+    <div id="red-layer"></div>
+         <div class="container">
+             <h1 style="text-align: center;">Readequação</h1>
+             <br><br>
+             <form method="POST" enctype="multipart/form-data" action="/readequacao" style="text-align: center;"> 
+                 <label for="negocio" id="numero-negocio">Número do Negócio</label><br>
+                 <input type="text" name="negocio" id="negocio" style="height: 40px; font-size: 18px; border: none; text-align: center; margin: 10px auto; display: block;">
+                 <br><br>
+                 <button type="submit" class="buscar-button" style="display: block; margin: 0 auto;">Buscar</button>
+             </form>
+             <br>
+         
+    
+    {% if result %}
+
+     </div>
+        
+    
+        
+        <form method="POST" action="/submit_readequacao" enctype="multipart/form-data">
+        
+            
+            
+        </form>
+    <br>
+    <div class="container">
+        <span style="display: block; text-align: center;"><h2>Detalhes do Negócio:</h2></span>
+        <br>
+        <span style="display: block; text-align: center;">{{ result.name }}</span>
+        <br><br>
+        <span style="display: block; text-align: center;">{{ result.texto0__1 }}</span>
+        <br><br>
+        <span style="display: block; text-align: center;">{{ result.lista_suspensa3__1 }}</span>
+    </div>
+    <br>
+    <br>
+        
+        <div class="result-item"></div>
+        <div class="result-item">
+        
+            <mudanca1>Campos</mudanca1>
+            <mudanca2>Dados Atuais</mudanca2>
+            <mudanca3>Mudanças</mudanca3>
+        </div>
+        <div class="result-item"></div>
+        <div class="result-item">
+            <label>Data Entrega AÉREO:</label>
+            <span>{{ result.data__1 }}</span>
+            <input type="text" name="data__1" id="novaDataEntregaAEREO" value="{% if result.data__1 %}{{ result.data__1 }}{% endif %}" style = "border: none; height: 30px; text-align: center;"">
+        </div>
+        <div class="result-item">
+            <label>Data Entrega TERRESTRE:</label>
+            <span>{{ result.date3__1 }}</span>
+            <input type="text" name="date3__1" id="novaDataEntregaTERRESTRE" value="{% if result.date3__1 %}{{ result.date3__1 }}{% endif %}" style = "border: none; height: 30px; text-align: center;">
+        </div>
+        <div class="result-item">
+            <label>Data Entrega CRIAÇÃO:</label>
+            <span>{{ result.date9__1 }}</span>
+            <input type="text" name="date9__1" id="novaDataEntregaCRIACAO" value="{% if result.date9__1 %}{{ result.date9__1 }}{% endif %}" style = "border: none; height: 30px;  text-align: center;">
+        </div>
+        <div class="result-item">
+            <label>Data Entrega SALES:</label>
+            <span>{{ result.date7__1 }}</span>
+            <input type="text" name="date7__1" id="novaDataEntregaSALES" value="{% if result.date7__1 %}{{ result.date7__1 }}{% endif %}" style = "border: none; height: 30px;  text-align: center;">
+        </div>
+        <div class="result-item">
+            <label>Opção 1A:</label>
+            <span>{{ result.texto16__1 }}</span>
+            <input type="text" name="texto16__1" id="novaOpcao1A" value="{% if result.texto16__1 %}{{ result.texto16__1 }}{% endif %}" style = "border: none; height: 30px; text-align: center;">
+        </div>
+        <div class="result-item">
+            <label>Opção 2A:</label>
+            <span>{{ result.dup__of_op__o_1c0__1 }}</span>
+            <input type="text" name="dup__of_op__o_1c0__1" id="novaOpcao2A" value="{% if result.dup__of_op__o_1c0__1 %}{{ result.dup__of_op__o_1c0__1 }}{% endif %}" style = "border: none; height: 30px; text-align: center;">
+        </div>
+        <div class="result-item">
+            <label>Opção 3A:</label>
+            <span>{{ result.dup__of_op__o_2c__1 }}</span>
+            <input type="text" name="dup__of_op__o_2c__1" id="novaOpcao3A" value="{% if result.dup__of_op__o_2c__1 %}{{ result.dup__of_op__o_2c__1 }}{% endif %}" style = "border: none; height: 30px; text-align: center;">
+        </div>
+        <div class="result-item">
+            <label>Opção 4A:</label>
+            <span>{{ result.dup__of_op__o_3c9__1 }}</span>
+            <input type="text" name="dup__of_op__o_3c9__1" id="novaOpcao4A" value="{% if result.dup__of_op__o_3c9__1 %}{{ result.dup__of_op__o_3c9__1 }}{% endif %}" style = "border: none; height: 30px; text-align: center;">
+            </div>
+        <div class="result-item">
+            <label></label>
+            <span></span>
+            <input type="hidden" name="name" id="result_name" value="{{ result.name }}">
+        </div>
+        <div class="result-item">
+            <label></label>
+            <span></span>
+            <input type="hidden" name="id" id="item_id" value="{{ result.item_id }}">
+        </div>
+
+    <input type="hidden" name="original_data__1" value="{{ result.data__1 or '' }}">
+    <input type="hidden" name="original_date3__1" value="{{ result.date3__1 or '' }}">
+    <input type="hidden" name="original_date9__1" value="{{ result.date9__1 or '' }}">
+    <input type="hidden" name="original_date7__1" value="{{ result.date7__1 or '' }}">
+    <input type="hidden" name="original_texto16__1" value="{{ result.texto16__1 or '' }}">
+    <input type="hidden" name="original_dup__of_op__o_1c0__1" value="{{ result.dup__of_op__o_1c0__1 or '' }}">
+    <input type="hidden" name="original_dup__of_op__o_2c__1" value="{{ result.dup__of_op__o_2c__1 or '' }}">
+    <input type="hidden" name="original_dup__of_op__o_3c9__1" value="{{ result.dup__of_op__o_3c9__1 or '' }}">
+    <input type="hidden" name="original_data__1" value="{{ result.data__1 }}">
+    
+    
+    <br>
+    <br>
+    <h1 id="resumo-mudancas-titulo">Resumo das mudanças:</h1>
+    <div id="resumo-mudancas-conteudo">
+        {% if result.data__1 != result.novo_data__1 %}
+            <p id="resumo-data__1">Data de entrega do AÉREO foi alterada de <span id="original-data__1">{{ result.data__1 if result.data__1 is defined and result.data__1 != None and result.data__1 != "" else ' - ' }}</span> para <span id="nova-data__1">{{ result.novo_data__1 }}</span></p>
+        {% endif %}
+
+        <p id="resumo-date3__1">Data de entrega do TERRESTRE foi alterada de <span id="original-date3__1">{{ result.date3__1 if result.date3__1 is defined and result.date3__1 != None and result.date3__1 != "" else ' - ' }}</span> para <span id="nova-date3__1"></span></p>
+        <p id="resumo-date9__1">Data de entrega da CRIAÇÃO foi alterada de <span id="original-date9__1">{{ result.date9__1 if result.date9__1 is defined and result.date9__1 != None and result.date9__1 != "" else ' - ' }}</span> para <span id="nova-date9__1"></span></p>
+        <p id="resumo-date7__1">Data de entrega do SALES foi alterada de <span id="original-date7__1">{{ result.date7__1 if result.date7__1 is defined and result.date7__1 != None and result.date7__1 != "" else ' - ' }}</span> para <span id="nova-date7__1"></span></p>
+        <p id="resumo-texto16__1">Opção 1A foi alterada de <span id="original-texto16__1">{{ result.texto16__1 if result.texto16__1 is defined and result.texto16__1 != None and result.texto16__1 != "" else ' - ' }}</span> para <span id="nova-texto16__1"></span></p>
+        <p id="resumo-dup__of_op__o_1c0__1">Opção 2A foi alterada de <span id="original-dup__of_op__o_1c0__1">{{ result.dup__of_op__o_1c0__1 if result.dup__of_op__o_1c0__1 is defined and result.dup__of_op__o_1c0__1 != None and result.dup__of_op__o_1c0__1 != "" else ' - ' }}</span> para <span id="nova-dup__of_op__o_1c0__1"></span></p>
+        <p id="resumo-dup__of_op__o_2c__1">Opção 3A foi alterada de <span id="original-dup__of_op__o_2c__1">{{ result.dup__of_op__o_2c__1 if result.dup__of_op__o_2c__1 is defined and result.dup__of_op__o_2c__1 != None and result.dup__of_op__o_2c__1 != "" else ' - ' }}</span> para <span id="nova-dup__of_op__o_2c__1"></span></p>
+        <p id="resumo-dup__of_op__o_3c9__1">Opção 4A foi alterada de <span id="original-dup__of_op__o_3c9__1">{{ result.dup__of_op__o_3c9__1 if result.dup__of_op__o_3c9__1 is defined and result.dup__of_op__o_3c9__1 != None and result.dup__of_op__o_3c9__1 != "" else ' - ' }}</span> para <span id="nova-dup__of_op__o_3c9__1"></span></p>
+
+        <p style="text-align: right; font-size: 14px;">*demais campos permanecem inalterados</p>
+    </div>
+            
+    
+    <br>
+
+    
+    
+        <h1>Readequação PDF:</h1>
+        <div id="drop-area">
+            <p>Arraste e solte seu arquivo aqui, ou clique para selecionar o arquivo</p>
+        </div>
+        <div id="file-upload-container">
+            <input type="file" name="file" id="file-input">
+        </div>
+    <br>
+        <div id="file-name">
+            <span id="file-name-display"></span>
+        </div>
+    
+    <br>
+    <br>
+
+        <div id="submit-button-container">
+            <button type="button" id="submit-readequacao">Enviar readequação</button>
+        </div>
+    {% elif result is none and request.method == 'POST' %}
+        <p style="color: #eb6e72;">Nenhuma oportunidade com este número foi encontrada no Monday.</p>
+    {% endif %}
+
+    <div id="response-message"></div>
+
+            <script>
+                const dropArea = document.getElementById('drop-area');
+                const fileInput = document.getElementById('file-input');
+                const submitButton = document.getElementById('submit-readequacao');
+                const fileNameDisplay = document.getElementById('file-name-display');
+
+                function updateFileNameDisplay(files) {
+                    if (files && files.length > 0) {
+                        fileNameDisplay.textContent = files[0].name;
+                    } else {
+                        fileNameDisplay.textContent = 'Nenhum arquivo selecionado';
+                    }
+                }
+
+                fileInput.addEventListener('change', () => {
+                    updateFileNameDisplay(fileInput.files);
+                });
+                
+                dropArea.addEventListener('click', () => {
+                    fileInput.click();
+                });
+
+                dropArea.addEventListener('dragover', (event) => {
+                    event.preventDefault();
+                    dropArea.style.backgroundColor = '#f0f0f0';
+                });
+
+                dropArea.addEventListener('dragleave', () => {
+                    dropArea.style.backgroundColor = '';
+                });
+
+                dropArea.addEventListener('drop', (event) => {
+                    event.preventDefault();
+                    dropArea.style.backgroundColor = '';
+                    fileInput.files = event.dataTransfer.files;
+                    updateFileNameDisplay(fileInput.files);
+                });
+                console.log("submitButton:", submitButton);
+                submitButton.addEventListener('click', () => {
+                    const novaDataEntregaAEREO = document.getElementById('novaDataEntregaAEREO').value;
+                    const novaDataEntregaTERRESTRE = document.getElementById('novaDataEntregaTERRESTRE').value;
+                    const novaDataEntregaCRIACAO = document.getElementById('novaDataEntregaCRIACAO').value;
+                    const novaDataEntregaSALES = document.getElementById('novaDataEntregaSALES').value;
+                    const novaOpcao1A = document.getElementById('novaOpcao1A').value;
+                    const novaOpcao2A = document.getElementById('novaOpcao2A').value;
+                    const novaOpcao3A = document.getElementById('novaOpcao3A').value;
+                    const novaOpcao4A = document.getElementById('novaOpcao4A').value;
+                    const result_name = document.getElementById('result_name').value;
+                    const item_id = document.getElementById('item_id').value;
+                    const selectedFile = fileInput.files[0];
+
+                    const formData = new FormData();
+                    formData.append('novaDataEntregaAEREO', novaDataEntregaAEREO);
+                    formData.append('novaDataEntregaTERRESTRE', novaDataEntregaTERRESTRE);
+                    formData.append('novaDataEntregaCRIACAO', novaDataEntregaCRIACAO);
+                    formData.append('novaDataEntregaSALES', novaDataEntregaSALES);
+                    formData.append('novaOpcao1A', novaOpcao1A);
+                    formData.append('novaOpcao2A', novaOpcao2A);
+                    formData.append('novaOpcao3A', novaOpcao3A);
+                    formData.append('novaOpcao4A', novaOpcao4A);
+                    formData.append('result_name', result_name);
+                    formData.append('item_id', item_id);
+                    if (selectedFile) {
+                        formData.append('file', selectedFile);
+                    } // Closing curly brace added here!
+
+                    fetch('/submit_readequacao', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        alert(data.message); // Exibe o pop-up de sucesso
+                        window.location.href = 'https://1249df62-753d-43ce-be5b-b88a2b2fbeeb-00-nsp668z9dq9e.spock.replit.dev/readequacao'; // Recarrega a página
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred during submission.');
+                    });
+                });
+    document.addEventListener('DOMContentLoaded', function() {
+            // Inicialize flatpickr para os campos de data
+            flatpickr("#novaDataEntregaAEREO", { dateFormat: "d/m/Y" });
+            flatpickr("#novaDataEntregaTERRESTRE", { dateFormat: "d/m/Y" });
+            flatpickr("#novaDataEntregaCRIACAO", { dateFormat: "d/m/Y" });
+            flatpickr("#novaDataEntregaSALES", { dateFormat: "d/m/Y" });
+
+            function atualizarResumoMudancas() {
+                const novaDataEntregaAEREO = document.getElementById('novaDataEntregaAEREO').value;
+                const novaDataEntregaTERRESTRE = document.getElementById('novaDataEntregaTERRESTRE').value;
+                const novaDataEntregaCRIACAO = document.getElementById('novaDataEntregaCRIACAO').value;
+                const novaDataEntregaSALES = document.getElementById('novaDataEntregaSALES').value;
+                const novaOpcao1A = document.getElementById('novaOpcao1A').value;
+                const novaOpcao2A = document.getElementById('novaOpcao2A').value;
+                const novaOpcao3A = document.getElementById('novaOpcao3A').value;
+                const novaOpcao4A = document.getElementById('novaOpcao4A').value;
+
+                const originalDataAEREO = document.querySelector('input[name="original_data__1"]').value;
+                const originalDataTERRESTRE = document.querySelector('input[name="original_date3__1"]').value;
+                const originalDataCRIACAO = document.querySelector('input[name="original_date9__1"]').value;
+                const originalDataSALES = document.querySelector('input[name="original_date7__1"]').value;
+                const originalOpcao1A = document.querySelector('input[name="original_texto16__1"]').value;
+                const originalOpcao2A = document.querySelector('input[name="original_dup__of_op__o_1c0__1"]').value;
+                const originalOpcao3A = document.querySelector('input[name="original_dup__of_op__o_2c__1"]').value;
+                const originalOpcao4A = document.querySelector('input[name="original_dup__of_op__o_3c9__1"]').value;
+
+                // Atualize apenas o texto dos spans, não os valores dos inputs
+                document.getElementById('nova-data__1').textContent = novaDataEntregaAEREO;
+                document.getElementById('nova-date3__1').textContent = novaDataEntregaTERRESTRE;
+                document.getElementById('nova-date9__1').textContent = novaDataEntregaCRIACAO;
+                document.getElementById('nova-date7__1').textContent = novaDataEntregaSALES;
+                document.getElementById('nova-texto16__1').textContent = novaOpcao1A;
+                document.getElementById('nova-dup__of_op__o_1c0__1').textContent = novaOpcao2A;
+                document.getElementById('nova-dup__of_op__o_2c__1').textContent = novaOpcao3A;
+                document.getElementById('nova-dup__of_op__o_3c9__1').textContent = novaOpcao4A;
+
+                const resumoDataAEREO = document.getElementById('resumo-data__1');
+                const resumoDate3 = document.getElementById('resumo-date3__1');
+                const resumoDate9 = document.getElementById('resumo-date9__1');
+                const resumoDate7 = document.getElementById('resumo-date7__1');
+                const resumoTexto16 = document.getElementById('resumo-texto16__1');
+                const resumoDup1c0 = document.getElementById('resumo-dup__of_op__o_1c0__1');
+                const resumoDup2c = document.getElementById('resumo-dup__of_op__o_2c__1');
+                const resumoDup3c9 = document.getElementById('resumo-dup__of_op__o_3c9__1');
+
+                // Atualize a exibição dos resumos com base nas diferenças
+                resumoDataAEREO.style.display = novaDataEntregaAEREO !== originalDataAEREO ? 'block' : 'none';
+                resumoDate3.style.display = novaDataEntregaTERRESTRE !== originalDataTERRESTRE ? 'block' : 'none';
+                resumoDate9.style.display = novaDataEntregaCRIACAO !== originalDataCRIACAO ? 'block' : 'none';
+                resumoDate7.style.display = novaDataEntregaSALES !== originalDataSALES ? 'block' : 'none';
+                resumoTexto16.style.display = novaOpcao1A !== originalOpcao1A ? 'block' : 'none';
+                resumoDup1c0.style.display = novaOpcao2A !== originalOpcao2A ? 'block' : 'none';
+                resumoDup2c.style.display = novaOpcao3A !== originalOpcao3A ? 'block' : 'none';
+                resumoDup3c9.style.display = novaOpcao4A !== originalOpcao4A ? 'block' : 'none';
+            }
+
+            // Adicione event listeners para os campos de entrada
+            document.getElementById('novaDataEntregaAEREO').addEventListener('input', atualizarResumoMudancas);
+            document.getElementById('novaDataEntregaTERRESTRE').addEventListener('input', atualizarResumoMudancas);
+            document.getElementById('novaDataEntregaCRIACAO').addEventListener('input', atualizarResumoMudancas);
+            document.getElementById('novaDataEntregaSALES').addEventListener('input', atualizarResumoMudancas);
+            document.getElementById('novaOpcao1A').addEventListener('input', atualizarResumoMudancas);
+            document.getElementById('novaOpcao2A').addEventListener('input', atualizarResumoMudancas);
+            document.getElementById('novaOpcao3A').addEventListener('input', atualizarResumoMudancas);
+            document.getElementById('novaOpcao4A').addEventListener('input', atualizarResumoMudancas);
+
+            // Chame a função inicialmente para configurar o resumo
+            atualizarResumoMudancas();
+        });
+    </script>
+                   

@@ -1,0 +1,519 @@
+from flask import Flask, request, abort, jsonify, render_template, url_for
+import json
+
+import requests
+from datetime import datetime, timedelta
+import mysql.connector
+import pandas as pd
+from io import StringIO
+from datetime import datetime
+import os
+import time
+from bs4 import BeautifulSoup
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from werkzeug.utils import secure_filename
+
+
+app = Flask(__name__, static_folder='assets')
+
+API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQxMDM1MDMyNiwiYWFpIjoxMSwidWlkIjo1NTIyMDQ0LCJpYWQiOiIyMDI0LTA5LTEzVDExOjUyOjQzLjAwMFoiLCJwZXIiOiJtZTp3cml0ZSIsImFjdGlkIjozNzk1MywicmduIjoidXNlMSJ9.hwTlwMwtbhKdZsYcGT7UoENBLZUAxnfUXchj5RZJBz4"
+API_URL = "https://api.monday.com/v2"
+
+def get_monday_data(query, variables=None):
+    headers = {"Authorization": API_KEY, "Content-Type": "application/json"}
+    payload = {'query': query}
+    if variables:
+        payload['variables'] = variables
+    response = requests.post(url=API_URL, json=payload, headers=headers)
+    return response.json()
+
+def formatar_data(data_value):
+    if isinstance(data_value, list):
+        if data_value:
+            data_str = data_value[0]  # Pega o primeiro elemento da lista
+        else:
+            return '' # Retorna string vazia se lista estiver vazia
+    elif isinstance(data_value, str):
+        data_str = data_value
+    else:
+        return '' # Retorna string vazia se nao for lista nem string
+
+    if data_str:
+        try:
+            data = datetime.strptime(data_str, '%Y-%m-%d')
+            return data.strftime('%d/%m/%Y')
+        except ValueError:
+            return '' # Retorna string vazia se o formato da data estiver incorreto
+    return ''
+
+def replace_none(valor):
+    if valor is None:
+        return '-'
+    return valor
+    
+@app.route('/', methods=['GET'])
+def home():
+    print("Welcome")
+    return "Welcome to the API!"
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    # ... (webhook code remains the same)
+    if request.method == 'POST':
+        try:
+            # ... (webhook processing)
+            pass
+        except Exception as e:
+            pass
+    else:
+        abort(400)
+
+@app.route('/set_subitem_date', methods=['POST'])
+def set_subitem_date():
+    # ... (set_subitem_date code remains the same)
+    if request.method == 'POST':
+        try:
+            # ... (subitem date setting)
+            pass
+        except Exception as e:
+            pass
+    else:
+        abort(400)
+
+@app.route('/change_subitem_date', methods=['POST'])
+def change_subitem_date():
+    # ... (change_subitem_date code remains the same)
+    if request.method == 'POST':
+        try:
+            # ... (subitem date change)
+            pass
+        except Exception as e:
+            pass
+    else:
+        abort(400)
+
+
+
+app.jinja_env.filters['replace_none'] = replace_none
+
+@app.route('/readequacao', methods=['GET', 'POST'])
+def readequacao():
+    result = None
+    if request.method == 'POST':
+        num_negocio = request.form.get('negocio')
+        print(f"Número do negócio: {num_negocio}")
+
+        query = """
+        query {
+          items_page_by_column_values(
+            limit: 50,
+            board_id: 7307869243,
+            columns: [{ column_id: "texto__1", column_values: ["%s"] }]
+          ) {
+            items {
+              id
+              name
+              column_values {
+                id
+                text
+                value
+              }
+            }
+          }
+        }
+        """ % num_negocio
+
+        monday_response = get_monday_data(query)
+        items = monday_response.get('data', {}).get('items_page_by_column_values', {}).get('items', [])
+             
+        if items:
+            item = items[0]
+            name = item.get('name')
+            item_id = item.get('id')
+
+            column_ids = ["texto0__1", "lista_suspensa3__1", "data__1", "date3__1", "date9__1", "date7__1", "texto16__1", "dup__of_op__o_1c0__1", "dup__of_op__o_2c__1", "dup__of_op__o_3c9__1"]
+            column_values = {col_id: None for col_id in column_ids}
+
+            for column in item.get('column_values', []):
+                if column['id'] in column_ids:
+                    column_values[column['id']] = column.get('text') or column.get('value')
+            
+           
+                
+            result = {
+                "item_id": item_id,
+                "name": name,
+                "texto0__1": column_values.get('texto0__1'),
+                "lista_suspensa3__1": column_values.get('lista_suspensa3__1'),
+                "data__1": column_values.get('data__1'),
+                "date3__1": column_values.get('date3__1'),
+                "date9__1": column_values.get('date9__1'),
+                "date7__1": column_values.get('date7__1'),
+                "texto16__1": column_values.get('texto16__1'),
+                "dup__of_op__o_1c0__1": column_values.get('dup__of_op__o_1c0__1'),
+                "dup__of_op__o_2c__1": column_values.get('dup__of_op__o_2c__1'),
+                "dup__of_op__o_3c9__1": column_values.get('dup__of_op__o_3c9__1'),
+            }
+            #Atualiza o dicionário, ao invez de criar um novo.
+            result['data__1'] = formatar_data(result['data__1'])
+            result['date3__1'] = formatar_data(result['date3__1'])
+            result['date9__1'] = formatar_data(result['date9__1'])
+            result['date7__1'] = formatar_data(result['date7__1'])
+
+            print(f"Items from Monday.com: {items}")
+            print(f"Result in readequacao: {result}")
+
+            print(f"Name: {name}")
+            print(f"texto0__1: {result.get('texto0__1')}")
+            print(f"lista_suspensa3__1: {result.get('lista_suspensa3__1')}")
+            print(f"data__1: {result.get('data__1')}")
+            print(f"date3__1: {result.get('date3__1')}")
+            print(f"date9__1: {result.get('date9__1')}")
+            print(f"date7__1: {result.get('date7__1')}")
+            print(f"texto16__1: {result.get('texto16__1')}")
+            print(f"dup__of_op__o_1c0__1: {result.get('dup__of_op__o_1c0__1')}")
+            print(f"dup__of_op__o_2c__1: {result.get('dup__of_op__o_2c__1')}")
+            print(f"dup__of_op__o_3c9__1: {result.get('dup__of_op__o_3c9__1')}")
+
+        else:
+            result = None
+
+        return render_template('readequacao.html', num_negocio=num_negocio, result=result)
+
+    return render_template('readequacao.html')
+
+@app.route('/submit_readequacao', methods=['POST'])
+def submit_readequacao():
+    novaDataEntregaAEREO = request.form.get('novaDataEntregaAEREO')
+    novaDataEntregaTERRESTRE = request.form.get('novaDataEntregaTERRESTRE')
+    novaDataEntregaCRIACAO = request.form.get('novaDataEntregaCRIACAO')
+    novaDataEntregaSALES = request.form.get('novaDataEntregaSALES')
+    novaOpcao1A = request.form.get('novaOpcao1A')
+    novaOpcao2A = request.form.get('novaOpcao2A')
+    novaOpcao3A = request.form.get('novaOpcao3A')
+    novaOpcao4A = request.form.get('novaOpcao4A')
+    result_name = request.form.get('result_name')
+    file = request.files.get('file')
+    item_id = request.form.get('item_id')  # Obtém o item_id do formulário
+
+    print("Dados do formulário:", request.form)
+    print("ID do item a atualizar:", item_id)
+
+    # Trata "None" como string vazia
+    novaOpcao1A = "" if novaOpcao1A == "None" else novaOpcao1A
+    novaOpcao2A = "" if novaOpcao2A == "None" else novaOpcao2A
+    novaOpcao3A = "" if novaOpcao3A == "None" else novaOpcao3A
+    novaOpcao4A = "" if novaOpcao4A == "None" else novaOpcao4A
+    novaDataEntregaAEREO = "" if novaDataEntregaAEREO == "None" else novaDataEntregaAEREO
+    novaDataEntregaTERRESTRE = "" if novaDataEntregaTERRESTRE == "None" else novaDataEntregaTERRESTRE
+    novaDataEntregaCRIACAO = "" if novaDataEntregaCRIACAO == "None" else novaDataEntregaCRIACAO
+    novaDataEntregaSALES = "" if novaDataEntregaSALES == "None" else novaDataEntregaSALES
+
+    API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQxMDM1MDMyNiwiYWFpIjoxMSwidWlkIjo1NTIyMDQ0LCJpYWQiOiIyMDI0LTA5LTEzVDExOjUyOjQzLjAwMFoiLCJwZXIiOiJtZTp3cml0ZSIsImFjdGlkIjozNzk1MywicmduIjoidXNlMSJ9.hwTlwMwtbhKdZsYcGT7UoENBLZUAxnfUXchj5RZJBz4"  # Substitua pelo seu token real
+
+
+    def update_monday_item_with_file(item_id, result_name, novaDataEntregaAEREO, novaDataEntregaTERRESTRE, novaDataEntregaCRIACAO, novaDataEntregaSALES, novaOpcao1A, novaOpcao2A, novaOpcao3A, novaOpcao4A, file):
+        monday_api_url = "https://api.monday.com/v2"
+        monday_api_token = API_KEY
+        monday_board_id = 7307869243
+        item_id = request.form.get('item_id')
+
+        def convert_date(date_str):
+            try:
+                date_obj = datetime.strptime(date_str, "%d/%m/%Y")
+                return date_obj.strftime("%Y-%m-%d")
+            except (ValueError, TypeError):
+                return None
+
+        data__1 = convert_date(novaDataEntregaAEREO)
+        date9__1 = convert_date(novaDataEntregaTERRESTRE)
+        date3__1 = convert_date(novaDataEntregaCRIACAO)
+        date7__1 = convert_date(novaDataEntregaSALES)
+
+        column_values = {}
+        if date9__1:
+            column_values["date9__1"] = {"date": date9__1}
+        if date3__1:
+            column_values["date3__1"] = {"date": date3__1}
+        if date7__1:
+            column_values["date7__1"] = {"date": date7__1}
+        if novaOpcao1A:
+            column_values["texto16__1"] = novaOpcao1A
+        if novaOpcao2A:
+            column_values["dup__of_op__o_1c0__1"] = novaOpcao2A
+        if novaOpcao3A:
+            column_values["dup__of_op__o_2c__1"] = novaOpcao3A
+        if novaOpcao4A:
+            column_values["dup__of_op__o_3c9__1"] = novaOpcao4A
+
+        print(f"Column values to update (excluding data__1): {column_values}")
+        print(f"Value of data__1 after conversion: {data__1}")
+
+        # Correção: Usar strings vazias ""
+        if not novaOpcao1A:
+            column_values["texto16__1"] = ""
+        if not novaOpcao2A:
+            column_values["dup__of_op__o_1c0__1"] = ""
+        if not novaOpcao3A:
+            column_values["dup__of_op__o_2c__1"] = ""
+        if not novaOpcao4A:
+            column_values["dup__of_op__o_3c9__1"] = ""
+
+        print(f"Column values to update: {column_values}")
+
+        monday_query = """
+        mutation {
+          change_multiple_column_values (item_id: 7815005218, board_id: 7307869243, column_values: "{\\"data__1\\": {\\"date\\":\\"{data__1}\\"},\\"date9__1\\": {\\"date\\":\\"2025-03-29\\"}}") {
+            id
+          }
+        }
+        """
+
+        print(f"Monday Query: {monday_query}")
+
+        headers = {
+            "Authorization": API_KEY,
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "query": monday_query  # Corrected line: Using monday_query here
+        }
+
+        
+        try:
+            response = requests.post(monday_api_url, json={"query": monday_query}, headers=headers)
+            response.raise_for_status()
+            monday_response = response.json()
+
+            if monday_response and 'data' in monday_response and monday_response['data'] and 'change_multiple_column_values' in monday_response['data']['data'] and monday_response['data']['data']['change_multiple_column_values'] and 'id' in monday_response['data']['data']['change_multiple_column_values']:
+                updated_item_id = str(monday_response['data']['data']['change_multiple_column_values']['id'])
+                print(f"Item ID updated: {updated_item_id}")
+                return updated_item_id
+            else:
+                print(f"Erro na resposta da API Monday: {monday_response}")
+                return None
+
+        except requests.exceptions.RequestException as e:
+            print(f"Erro na requisição para a API Monday: {e}")
+            if e.response:
+                print(f"Response text: {e.response.text}")
+            return None
+        except (json.JSONDecodeError, TypeError, KeyError) as e:
+            print(f"Erro ao processar a resposta da API Monday: {e}")
+            return None
+
+    item_id_updated = update_monday_item_with_file(item_id, result_name, novaDataEntregaAEREO, novaDataEntregaTERRESTRE, novaDataEntregaCRIACAO, novaDataEntregaSALES, novaOpcao1A, novaOpcao2A, novaOpcao3A, novaOpcao4A, file)
+
+    file_message = "No file uploaded."
+    if file:
+        try:
+            apiKey = API_KEY
+            headers = {"Authorization": API_KEY, "Content-Type": "application/json"}
+            url = "https://api.monday.com/v2/file"
+
+            payload = {
+                'query': f'mutation add_file($file: File!) {{add_file_to_column (item_id: "{item_id}", column_id:"file_mkp3rd8p" file: $file) {{id}}}}',
+                'map': '{"application":"variables.file"}'
+            }
+
+            files = [
+                ('application', (file.filename, file, 'application/pdf'))  # using the uploaded file.
+            ]
+
+            response = requests.post(url, headers=headers, data=payload, files=files)
+
+            print(response.text)
+            print(response.reason)
+
+            if 'errors' in response.json():
+                file_message = f"File upload failed: {response.json()['errors']}"
+                print(file_message)
+            else:
+                file_message = f"File '{file.filename}' uploaded successfully."
+                print(file_message)
+
+        except requests.exceptions.RequestException as e:
+            file_message = f"File upload failed: {e}"
+            print(file_message)
+        except Exception as e:
+            file_message = f"An unexpected error occurred: {e}"
+            print(file_message)
+
+    response_data = {
+        'message': 'Readequação enviada com sucesso',
+        'file_message': file_message,
+        'item_id': item_id_updated
+    }
+    return jsonify(response_data)
+
+BOARD_ID = 7307869243
+TARGET_COLUMN_ID = "text_mkp4rjv8"
+TARGET_VALUE = "3180"
+
+headers = {"Authorization": API_KEY, "Content-Type": "application/json"}
+
+@app.route('/oportunidades', methods=['POST'])
+def oportunidades():
+    try:
+        data = request.get_json()  # Get the JSON data sent in the request
+        print("Received JSON:", data)
+    
+        num_negocio = data.get("num_negocio")
+        print("Value of num_negocio:", num_negocio)
+    
+        if not num_negocio:
+            return jsonify({"error": "Missing 'num_negocio' in the request payload"}), 400
+    
+        query = """
+            query {
+              items_page_by_column_values(
+                limit: 50,
+                board_id: %s,
+                columns: [{ column_id: "%s", column_values: ["%s"] }]
+              ) {
+                items {
+                  id
+                  name
+                  column_values {
+                    id
+                    text
+                    value
+                  }
+                }
+              }
+            }
+            """ % (BOARD_ID, TARGET_COLUMN_ID, num_negocio)
+    
+        payload = {"query": query}
+        response = requests.post(API_URL, headers=headers, data=json.dumps(payload))
+        response.raise_for_status()  # Raise an exception for bad status codes
+    
+        monday_data = response.json()
+        print("Monday.com API Response:", monday_data)
+    
+    
+
+        item_ids = []
+        if "data" in monday_data and "items_page_by_column_values" in monday_data["data"] and monday_data["data"]["items_page_by_column_values"]:
+            items_page = monday_data["data"]["items_page_by_column_values"]
+            if "items" in items_page:
+                for item in items_page["items"]:
+                    item_ids.append(item["id"])
+
+        return jsonify({"item_ids": item_ids, "received_num_negocio": num_negocio})
+
+    
+    
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": f"Error communicating with monday.com: {str(e)}", "received_num_negocio": num_negocio if 'num_negocio' in locals() else None}), 500
+    except json.JSONDecodeError:
+        return jsonify({"error": "Invalid JSON received", "received_num_negocio": None}), 400
+    except Exception as e:
+        return jsonify({"error": f"An unexpected error occurred: {str(e)}", "received_num_negocio": num_negocio if 'num_negocio' in locals() else None}), 500
+
+
+
+PLOOMES_WEBHOOK_URL = "https://api2.ploomes.com/Webhooks"
+PLOOMES_API_KEY = "88BF752C4C1EDAC625633A6DC1B568E4C1DC83F77C9672D316DAC1725B2F8E9E6839B13F4045E04CEEEAFF22C1B199AF2F2B0DAC759E9A148C5C20C63A381B20"
+
+# Substitua pela sua chave de API real
+CALLBACK_URL = "https://1249df62-753d-43ce-be5b-b88a2b2fbeeb-00-nsp668z9dq9e.spock.replit.dev/ploomesnegocio"  # URL correta para receber o webhook
+WEBHOOK_REGISTERED_FILE = "webhook_registered.txt"
+
+headers = {
+    "Content-Type": "application/json",
+    "User-Key": PLOOMES_API_KEY,
+}
+
+@app.route('/ploomesnegocio', methods=['POST'])
+def ploomes_webhook_forward():
+    """
+    Endpoint que recebe o webhook de negócios.
+    """
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            print(f"Webhook recebido: {data}")
+
+            request_headers = request.headers
+            forwarded_headers = {k: v for k, v in request_headers.items() if k.lower() != 'host'}
+            forwarded_headers['User-Key'] = PLOOMES_API_KEY
+
+            response = requests.post(PLOOMES_WEBHOOK_URL, json=data, headers=forwarded_headers)
+            response.raise_for_status()
+
+            return response.text, response.status_code, response.headers.items()
+
+        except requests.exceptions.RequestException as e:
+            error_message = f"Erro ao fazer a requisição para o Ploomes: {e}"
+            print(error_message)
+            return json.dumps({'error': error_message}), 500, {'Content-Type': 'application/json'}
+        except Exception as e:
+            error_message = f"Erro ao processar a requisição: {e}"
+            print(error_message)
+            return json.dumps({'error': error_message}), 400, {'Content-Type': 'application/json'}
+
+    elif request.method == 'GET':
+        return "Endpoint /negocio acessado com GET", 200
+
+@app.route('/registerendpoint')
+def register_endpoint_page():
+    return render_template('registerendpoint.html')
+
+@app.route('/register_ploomes_endpoint', methods=['POST'])
+def register_ploomes_endpoint():
+    """
+    Registra o webhook no Ploomes.
+    """
+    if not os.path.exists(WEBHOOK_REGISTERED_FILE):
+        try:
+            webhook_payload = {
+                "EntityId": 2,
+                "ActionId": 2,
+                "CallbackUrl": CALLBACK_URL,
+                "ValidationKey": "1234"
+            }
+
+            webhook_response = requests.post(PLOOMES_WEBHOOK_URL, headers=headers, json=webhook_payload)
+            webhook_response.raise_for_status()
+            print("Webhook registrado com sucesso!")
+            print(webhook_response.json())
+
+            with open(WEBHOOK_REGISTERED_FILE, "w") as f:
+                f.write("registered")
+
+            return jsonify({'success': True})
+
+        except requests.exceptions.RequestException as e:
+            error_message = f"Erro ao registrar o webhook: {e}"
+            print(error_message)
+            return jsonify({'success': False, 'error': str(e)}), 500
+        except Exception as e:
+            error_message = f"Erro ao processar a requisição: {e}"
+            print(error_message)
+            return jsonify({'success': False, 'error': str(e)}), 400
+    else:
+        return jsonify({'success': True})
+
+@app.route('/negocio_campos', methods=['GET'])
+def get_negocio_campos():
+    """
+    Obtém os campos de negócio.
+    """
+    try:
+        url = "https://public-api2.ploomes.com/Fields?$filter=EntityId+eq+2" #EntityId corrigido
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except requests.exceptions.RequestException as e:
+        error_message = f"Erro ao obter campos de negócio: {e}"
+        print(error_message)
+        return jsonify({'error': error_message}), 500
+    except Exception as e:
+        error_message = f"Erro ao processar a requisição: {e}"
+        print(error_message)
+        return jsonify({'error': error_message}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
