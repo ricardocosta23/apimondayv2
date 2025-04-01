@@ -28,8 +28,8 @@ MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
 
 # Define a filter for the Jinja2 template engine
 def replace_none(valor):
-    if valor is None or valor == "None":
-        return '-'
+    if valor is None or valor == "None" or valor == "" or valor == '""':
+        return ''
     return valor
 
 app.jinja_env.filters['replace_none'] = replace_none
@@ -48,6 +48,7 @@ def readequacao():
     result = None
 
     if request.method == 'POST':
+        
         num_negocio = request.form.get('negocio')
         logger.info(f"Searching for business number: {num_negocio}")
 
@@ -88,7 +89,10 @@ def readequacao():
                 column_ids = [
                     "texto0__1", "lista_suspensa3__1", "data__1", "date3__1", 
                     "date9__1", "date7__1", "texto16__1", "dup__of_op__o_1c0__1", 
-                    "dup__of_op__o_2c__1", "dup__of_op__o_3c9__1"
+                    "dup__of_op__o_2c__1", "dup__of_op__o_3c9__1",
+                    "dup__of_op__o_1a__1", "text0__1", "dup__of_op__o_1c5__1",
+                    "dup__of_op__o_1c__1", "dup__of_op__o_3a__1", "dup__of_op__o_3b__1",
+                    "dup__of_op__o_3c4__1", "dup__of_op__o_3c__1"
                 ]
                 column_values = {col_id: None for col_id in column_ids}
 
@@ -111,8 +115,17 @@ def readequacao():
                     "dup__of_op__o_1c0__1": column_values.get('dup__of_op__o_1c0__1'),
                     "dup__of_op__o_2c__1": column_values.get('dup__of_op__o_2c__1'),
                     "dup__of_op__o_3c9__1": column_values.get('dup__of_op__o_3c9__1'),
+                    "dup__of_op__o_1a__1": column_values.get('dup__of_op__o_1a__1'),
+                    "dup__of_op__o_1c5__1": column_values.get('dup__of_op__o_1c5__1'),
+                    "dup__of_op__o_1c__1": column_values.get('dup__of_op__o_1c__1'),
+                    "dup__of_op__o_3a__1": column_values.get('dup__of_op__o_3a__1'),
+                    "dup__of_op__o_3b__1": column_values.get('dup__of_op__o_3b__1'),
+                    "dup__of_op__o_3c4__1": column_values.get('dup__of_op__o_3c4__1'),
+                    "dup__of_op__o_3c__1": column_values.get('dup__of_op__o_3c__1'),
+                    "text0__1": column_values.get('text0__1'),
                 }
-
+                         
+                
                 # Format date values for display
                 result['data__1'] = formatar_data(result['data__1'])
                 result['date3__1'] = formatar_data(result['date3__1'])
@@ -130,6 +143,8 @@ def readequacao():
 
     return render_template('readequacao.html', result=result)
 
+
+
 @app.route('/submit_readequacao', methods=['POST'])
 def submit_readequacao():
     try:
@@ -145,9 +160,17 @@ def submit_readequacao():
 
         # Get option values
         novaOpcao1A = request.form.get('novaOpcao1A')
+        novaOpcao1B = request.form.get('novaOpcao1B')
+        novaOpcao1C = request.form.get('novaOpcao1C')
         novaOpcao2A = request.form.get('novaOpcao2A')
+        novaOpcao2B = request.form.get('novaOpcao2B')
+        novaOpcao2C = request.form.get('novaOpcao2C')
         novaOpcao3A = request.form.get('novaOpcao3A')
+        novaOpcao3B = request.form.get('novaOpcao3B')
+        novaOpcao3C = request.form.get('novaOpcao3C')
         novaOpcao4A = request.form.get('novaOpcao4A')
+        novaOpcao4B = request.form.get('novaOpcao4B')
+        novaOpcao4C = request.form.get('novaOpcao4C')
 
         # Get file if uploaded
         file = request.files.get('file')
@@ -179,26 +202,42 @@ def submit_readequacao():
             if date7__1:
                 column_values["date7__1"] = {"date": date7__1}
 
-        # Add text values to column_values
+        # Add text values to column_values only if they exist
         if novaOpcao1A and novaOpcao1A != "None":
             column_values["texto16__1"] = novaOpcao1A
-        else:
-            column_values["texto16__1"] = ""
 
         if novaOpcao2A and novaOpcao2A != "None":
             column_values["dup__of_op__o_1c0__1"] = novaOpcao2A
-        else:
-            column_values["dup__of_op__o_1c0__1"] = ""
 
         if novaOpcao3A and novaOpcao3A != "None":
             column_values["dup__of_op__o_2c__1"] = novaOpcao3A
-        else:
-            column_values["dup__of_op__o_2c__1"] = ""
 
         if novaOpcao4A and novaOpcao4A != "None":
             column_values["dup__of_op__o_3c9__1"] = novaOpcao4A
-        else:
-            column_values["dup__of_op__o_3c9__1"] = ""
+
+        if novaOpcao1B and novaOpcao1B != "None":
+            column_values["dup__of_op__o_1a__1"] = novaOpcao1B
+
+        if novaOpcao1C and novaOpcao1C != "None":
+            column_values["text0__1"] = novaOpcao1C
+
+        if novaOpcao2B and novaOpcao2B != "None":
+            column_values["dup__of_op__o_1c5__1"] = novaOpcao2B
+
+        if novaOpcao2C and novaOpcao2C != "None":
+            column_values["dup__of_op__o_1c__1"] = novaOpcao2C
+
+        if novaOpcao3B and novaOpcao3B != "None":
+            column_values["dup__of_op__o_3a__1"] = novaOpcao3B
+
+        if novaOpcao3C and novaOpcao3C != "None":
+            column_values["dup__of_op__o_3b__1"] = novaOpcao3C
+
+        if novaOpcao4B and novaOpcao4B != "None":
+            column_values["dup__of_op__o_3c4__1"] = novaOpcao4B
+
+        if novaOpcao4C and novaOpcao4C != "None":
+            column_values["dup__of_op__o_3c__1"] = novaOpcao4C
 
         # Update the item in Monday.com
         logger.debug(f"Updating item with column values: {column_values}")
@@ -215,81 +254,84 @@ def submit_readequacao():
                 try:
                     # Save file to a temporary location
                     assets_dir = os.path.join(app.root_path, 'assets')
-                    os.makedirs(assets_dir, exist_ok=True)  # Create the directory if it doesn't exist
+                    os.makedirs(assets_dir, exist_ok=True)
                     local_filepath = os.path.join(assets_dir, filename)
                     file.save(local_filepath)
 
-                    try:
-                        # This is a final attempt based on Monday.com's official documentation
-                        # for file uploads using their GraphQL API
-                        logger.info(f"Attempting file upload from: {local_filepath}")
+                    logger.info(f"Attempting file upload from: {local_filepath}")
 
-                        api_url = "https://api.monday.com/v2"
+                    upload_url = 'https://api.monday.com/v2/file'
+                    headers = {'Authorization': API_KEY}
+                    column_id_to_upload_to = "file_mkp3rd8p"
 
-                        # First, let's try using the mutation directly for file uploads
-                        # Step 1: Create the file in Monday.com storage
-                        with open(local_filepath, 'rb') as f:
-                            operations = json.dumps({
-                                "query": "mutation add_file($file: File!, $itemId: Int!, $columnId: String!) { add_file_to_column (item_id: $itemId, column_id: $columnId, file: $file) {id}}",
-                                "variables": {
-                                    "file": None,
-                                    "itemId": int(item_id),
-                                    "columnId": "file_mkp3rd8p"
-                                }
-                            })
+                    with open(local_filepath, 'rb') as f:
+                        files = {'file': (filename, f.read(), 'application/octet-stream')}
+                        assets_response = requests.post(
+                            upload_url,
+                            headers=headers,
+                            files=files
+                        )
+                        logger.debug(f"Upload response: {assets_response.text}")
 
-                            map_json = json.dumps({
-                                "0": ["variables.file"]
-                            })
+                        if assets_response.ok:
+                            try:
+                                response_data = assets_response.json()
+                                if 'data' in response_data and 'id' in response_data['data']:
+                                    asset_id = int(response_data['data']['id'])
+                                    logger.info(f"File uploaded successfully with asset ID: {asset_id}")
 
-                            # Create a multipart form-data request with the file as Monday.com expects
-                            files = {
-                                'operations': (None, operations),
-                                'map': (None, map_json),
-                                '0': (filename, f, file.content_type)
-                            }
+                                    # Now attach the file to the item using GraphQL mutation
+                                    query = f"""
+                                        mutation add_file($file: File!) {{
+                                            add_file_to_column (item_id: {int(item_id)},
+                                                                    column_id: "{column_id_to_upload_to}",
+                                                                    file: $file
+                                                                    ){{
+                                                id
+                                            }}
+                                        }}
+                                        """
 
-                            headers = {
-                                'Authorization': API_KEY  # Only authorization, let requests set the content type
-                            }
+                                    with open(local_filepath, 'rb') as f:
+                                        files = {
+                                            'query': (None, query, 'application/json'),
+                                            'variables[file]': (filename, f, 'multipart/form-data', {'Expires': '0'})
+                                        }
+                                        attach_response = requests.post(url=API_URL, files=files, headers=headers)
+                                        attach_response_json = attach_response.json()
+                                        logger.debug(f"File attach response: {attach_response_json}")
 
-                            logger.info(f"Sending file upload request with Monday.com's expected format")
-                            logger.info(f"URL: {api_url}")
-                            logger.info(f"Operations: {operations}")
-                            logger.info(f"Map: {map_json}")
-                            logger.info(f"File keys: {files.keys()}")
+                                        if 'errors' in attach_response_json:
+                                            logger.error(f"File attach failed: {attach_response_json['errors']}")
+                                            flash(f"Falha ao anexar arquivo: {attach_response_json['errors']}", "warning")
+                                        elif 'data' in attach_response_json and 'add_file_to_column' in attach_response_json['data']:
+                                            logger.info(f"File '{filename}' uploaded and attached successfully.")
+                                            flash("Arquivo enviado e anexado com sucesso!", "success")
+                                        else:
+                                            logger.error(f"Unexpected file attach response: {attach_response_json}")
+                                            flash("Falha ao anexar arquivo (resposta inesperada).", "warning")
 
-                            # Make a simple POST request with file data
-                            response = requests.post(
-                                api_url,
-                                headers=headers,
-                                files=files
-                            )
-                    finally:
-                        # Always clean up the temporary file
-                        try:
-                            if os.path.exists(temp_filepath):
-                                os.remove(temp_filepath)
-                        except Exception as e:
-                            logger.error(f"Error removing temporary file: {str(e)}")
-
-                    response_data = response.json() if response.text else {}
-
-                    if response.status_code == 200 and not response_data.get('errors'):
-                        logger.info(f"File uploaded successfully: {response_data}")
-                        flash("Dados e arquivo atualizados com sucesso!", "success")
-                    else:
-                        error_details = response_data.get('errors', [{'message': 'Unknown error'}])[0].get('message', 'Unknown error')
-                        logger.error(f"File upload failed (Status: {response.status_code}): {error_details}")
-                        logger.error(f"Full response: {response.text}")
-                        flash(f"Dados atualizados, mas falha ao enviar arquivo! {error_details}", "warning")
+                                else:
+                                    logger.error(f"Unexpected file upload response structure: {response_data}")
+                                    flash("Falha ao enviar arquivo (estrutura de resposta inesperada).", "warning")
+                            except json.JSONDecodeError:
+                                logger.error(f"Erro ao decodificar a resposta JSON do upload: {assets_response.text}")
+                                flash("Falha ao enviar arquivo (erro ao processar a resposta).", "warning")
+                        else:
+                            logger.error(f"File upload failed with status code: {assets_response.status_code}, response: {assets_response.text}")
+                            flash(f"Falha ao enviar arquivo (status code: {assets_response.status_code}).", "warning")
 
                 except Exception as e:
-                    logger.error(f"Error uploading file: {str(e)}")
-                    flash(f"Dados atualizados, mas erro ao enviar arquivo: {str(e)}", "warning")
-            else:
-                flash("Dados atualizados com sucesso!", "success")
+                    logger.error(f"Error during file upload: {str(e)}")
+                    flash(f"Erro ao enviar arquivo: {str(e)}", "warning")
+                finally:
+                    try:
+                        if os.path.exists(local_filepath):
+                            os.remove(local_filepath)
+                    except Exception as e:
+                        logger.error(f"Error removing temporary file: {str(e)}")
 
+            flash("Dados atualizados com sucesso!", "success")
             return render_template('success.html', item_id=item_id, result_name=result_name)
         else:
             flash("Falha ao atualizar dados no Monday.com", "danger")
