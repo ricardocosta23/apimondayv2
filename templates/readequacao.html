@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+
 <div class="card shadow">
     <div class="card-header bg-primary text-white">
         <h3><i class="fas fa-search me-2"></i>Buscar Negócio</h3>
@@ -8,8 +10,8 @@
     <div class="card-body">
         <form method="POST" action="{{ url_for('readequacao') }}" class="row g-3">
             <div class="col-md-6">
-                <label for="negocio" class="form-label">Número do Negócio</label>
-                <div class="input-group">
+                <label for="negocio" class="form-label text-center">Número do Negócio</label>
+                <div class="input-group d-flex justify-content-center">
                     <input type="text" class="form-control" id="negocio" name="negocio" placeholder="Digite o número do negócio" required>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-search me-1"></i> Buscar
@@ -22,7 +24,7 @@
 
 {% if result %}
 <div class="card shadow mt-4">
-    <div class="card-header bg-success text-white">
+    <div class="card-header bg-primary text-white">
         <h3><i class="fas fa-edit me-2"></i>Readequação de Dados</h3>
     </div>
     <div class="card-body">
@@ -35,15 +37,15 @@
                     <div class="card bg-dark">
                         <div class="card-header">
                             Informações do Negócio
-                        </div>
+                        </div><br>
                         <div class="card-body">
                             <h4 class="mb-3">{{ result.name|replace_none }}</h4>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <p><strong>Número do Negócio:</strong> {{ result.texto0__1|replace_none }}</p>
+                                    <p><strong>Conta:</strong><br> {{ result.texto0__1|replace_none }}</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><strong>Status:</strong> {{ result.lista_suspensa3__1|replace_none }}</p>
+                                    <p><strong>Reponsável Comercial:</strong><br> {{ result.lista_suspensa3__1|replace_none }}</p>
                                 </div>
                             </div>
                         </div>
@@ -166,7 +168,7 @@
                 <div class="col-md-12 mb-3">
                     <div class="card bg-dark">
                         <div class="card-header">
-                            <h5 class="mb-0 text-white">Opção 1A</h5>
+                            <h5 class="mb-0 text-white">Opção 1</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -183,6 +185,34 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 1B Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_1a__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao1B" class="form-label">Nova Opção 1B</label>
+                                        <input type="text" class="form-control" id="novaOpcao1B" name="novaOpcao1B">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 1C Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.text0__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao1C" class="form-label">Nova Opção 1C</label>
+                                        <input type="text" class="form-control" id="novaOpcao1C" name="novaOpcao1C">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -191,7 +221,7 @@
                 <div class="col-md-12 mb-3">
                     <div class="card bg-dark">
                         <div class="card-header">
-                            <h5 class="mb-0 text-white">Opção 2A</h5>
+                            <h5 class="mb-0 text-white">Opção 2</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -208,6 +238,34 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 2B Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_1c5__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao2B" class="form-label">Nova Opção 2B</label>
+                                        <input type="text" class="form-control" id="novaOpcao2B" name="novaOpcao2B">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 2C Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_1c__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao2C" class="form-label">Nova Opção 2C</label>
+                                        <input type="text" class="form-control" id="novaOpcao2C" name="novaOpcao2C">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,7 +274,7 @@
                 <div class="col-md-12 mb-3">
                     <div class="card bg-dark">
                         <div class="card-header">
-                            <h5 class="mb-0 text-white">Opção 3A</h5>
+                            <h5 class="mb-0 text-white">Opção 3</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -233,6 +291,34 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 3B Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_3a__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao3B" class="form-label">Nova Opção 3B</label>
+                                        <input type="text" class="form-control" id="novaOpcao3B" name="novaOpcao3B">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 3C Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_3b__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao3C" class="form-label">Nova Opção 3C</label>
+                                        <input type="text" class="form-control" id="novaOpcao3C" name="novaOpcao3C">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -241,7 +327,7 @@
                 <div class="col-md-12 mb-3">
                     <div class="card bg-dark">
                         <div class="card-header">
-                            <h5 class="mb-0 text-white">Opção 4A</h5>
+                            <h5 class="mb-0 text-white">Opção 4</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -258,18 +344,46 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 4B Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_3c4__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao4B" class="form-label">Nova Opção 4B</label>
+                                        <input type="text" class="form-control" id="novaOpcao4B" name="novaOpcao4B">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Opção 4C Atual</label>
+                                        <input type="text" class="form-control" value="{{ result.dup__of_op__o_3c__1|replace_none }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="novaOpcao4C" class="form-label">Nova Opção 4C</label>
+                                        <input type="text" class="form-control" id="novaOpcao4C" name="novaOpcao4C">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-12 mt-3">
                     <div class="form-group mb-3">
-                        <label for="file" class="form-label">Anexar Documento (opcional)</label>
+                        <label for="file" class="form-label">Anexar PDF Readequação</label>
                         <input type="file" class="form-control" id="file" name="file">
-                        <small class="form-text text-muted">Formatos aceitos: PDF, DOC, DOCX, XLS, XLSX, TXT, CSV, PNG, JPG, JPEG. Tamanho máximo: 16MB.</small>
+                        <small class="form-text text-muted">Formato aceito: PDF. Tamanho máximo: 16MB.</small>
                     </div>
                 </div>
-
+               
                 <!-- Resumo de mudanças section -->
                 <div class="col-md-12 mt-4">
                     <div class="card bg-light">
@@ -282,10 +396,10 @@
                             <input type="hidden" name="original_date3__1" value="{{ result.date3__1 or '' }}">
                             <input type="hidden" name="original_date9__1" value="{{ result.date9__1 or '' }}">
                             <input type="hidden" name="original_date7__1" value="{{ result.date7__1 or '' }}">
-                            <input type="hidden" name="original_texto16__1" value="{{ result.texto16__1 or '' }}">
-                            <input type="hidden" name="original_dup__of_op__o_1c0__1" value="{{ result.dup__of_op__o_1c0__1 or '' }}">
-                            <input type="hidden" name="original_dup__of_op__o_2c__1" value="{{ result.dup__of_op__o_2c__1 or '' }}">
-                            <input type="hidden" name="original_dup__of_op__o_3c9__1" value="{{ result.dup__of_op__o_3c9__1 or '' }}">
+                            <input type="hidden" name="original_texto16__1" value="{{ result.texto16__1 if result.texto16__1 is not none and result.texto16__1|string|trim != '' else '' }}">
+                            <input type="hidden" name="original_dup__of_op__o_1c0__1" value="{{ result.dup__of_op__o_1c0__1 if result.dup__of_op__o_1c0__1 is not none and result.dup__of_op__o_1c0__1|string|trim != '' else '' }}">
+                            <input type="hidden" name="original_dup__of_op__o_2c__1" value="{{ result.dup__of_op__o_2c__1 if result.dup__of_op__o_2c__1 is not none and result.dup__of_op__o_2c__1|string|trim != '' else '' }}">
+                            <input type="hidden" name="original_dup__of_op__o_3c9__1" value="{{ result.dup__of_op__o_3c9__1 if result.dup__of_op__o_3c9__1 is not none and result.dup__of_op__o_3c9__1|string|trim != '' else '' }}">
                             
                             <p id="resumo-data__1" class="mudanca-item" style="display: none">
                                 <i class="fas fa-check-circle text-success me-2"></i>
@@ -317,30 +431,134 @@
                             
                             <p id="resumo-texto16__1" class="mudanca-item" style="display: none">
                                 <i class="fas fa-check-circle text-success me-2"></i>
-                                Opção 1A foi alterada de 
-                                <span id="original-texto16__1" class="badge bg-secondary">{{ result.texto16__1 if result.texto16__1 is defined and result.texto16__1 != None and result.texto16__1 != "" else ' - ' }}</span> para 
-                                <span id="nova-texto16__1" class="badge bg-primary"></span>
+                                {% if result.texto16__1 is none or result.texto16__1|string == "" %}
+                                    Nova Opção 1A: <span id="nova-texto16__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 1A foi alterada de 
+                                    <span id="original-texto16__1" class="badge bg-secondary">{{ result.texto16__1 }}</span> para 
+                                    <span id="nova-texto16__1" class="badge bg-primary"></span>
+                                {% endif %}
+                            </p>
+
+                            <p id="resumo-dup__of_op__o_1a__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {% if not result.dup__of_op__o_1a__1 or result.dup__of_op__o_1a__1|string|trim in ["", '""'] %}
+                                    Nova Opção 1B: <span id="nova-dup__of_op__o_1a__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 1B foi alterada de 
+                                    <span id="original-dup__of_op__o_1a__1" class="badge bg-secondary">{{ result.dup__of_op__o_1a__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_1a__1" class="badge bg-primary"></span>
+                                {% endif %}
+                            </p>
+
+                            <p id="resumo-text0__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {% if not result.text0__1 or result.text0__1|string|trim in ["", '""'] %}
+                                    Nova Opção 1C: <span id="nova-text0__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 1C foi alterada de 
+                                    <span id="original-text0__1" class="badge bg-secondary">{{ result.text0__1 }}</span> para 
+                                    <span id="nova-text0__1" class="badge bg-primary"></span>
+                                {% endif %}
                             </p>
                             
                             <p id="resumo-dup__of_op__o_1c0__1" class="mudanca-item" style="display: none">
                                 <i class="fas fa-check-circle text-success me-2"></i>
-                                Opção 2A foi alterada de 
-                                <span id="original-dup__of_op__o_1c0__1" class="badge bg-secondary">{{ result.dup__of_op__o_1c0__1 if result.dup__of_op__o_1c0__1 is defined and result.dup__of_op__o_1c0__1 != None and result.dup__of_op__o_1c0__1 != "" else ' - ' }}</span> para 
-                                <span id="nova-dup__of_op__o_1c0__1" class="badge bg-primary"></span>
+                                {% if not result.dup__of_op__o_1c0__1 or result.dup__of_op__o_1c0__1|string|trim in ["", '""'] %}
+                                    Nova Opção 2A: <span id="nova-dup__of_op__o_1c0__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 2A foi alterada de 
+                                    <span id="original-dup__of_op__o_1c0__1" class="badge bg-secondary">{{ result.dup__of_op__o_1c0__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_1c0__1" class="badge bg-primary"></span>
+                                {% endif %}
+                            </p>
+
+                            <p id="resumo-dup__of_op__o_1c5__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {% if not result.dup__of_op__o_1c5__1 or result.dup__of_op__o_1c5__1|string|trim in ["", '""'] %}
+                                    Nova Opção 2B: <span id="nova-dup__of_op__o_1c5__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 2B foi alterada de 
+                                    <span id="original-dup__of_op__o_1c5__1" class="badge bg-secondary">{{ result.dup__of_op__o_1c5__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_1c5__1" class="badge bg-primary"></span>
+                                {% endif %}
+                            </p>
+
+                            <p id="resumo-dup__of_op__o_1c__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {% if not result.dup__of_op__o_1c__1 or result.dup__of_op__o_1c__1|string|trim in ["", '""'] %}
+                                    Nova Opção 2C: <span id="nova-dup__of_op__o_1c__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 2C foi alterada de 
+                                    <span id="original-dup__of_op__o_1c__1" class="badge bg-secondary">{{ result.dup__of_op__o_1c__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_1c__1" class="badge bg-primary"></span>
+                                {% endif %}
                             </p>
                             
                             <p id="resumo-dup__of_op__o_2c__1" class="mudanca-item" style="display: none">
                                 <i class="fas fa-check-circle text-success me-2"></i>
-                                Opção 3A foi alterada de 
-                                <span id="original-dup__of_op__o_2c__1" class="badge bg-secondary">{{ result.dup__of_op__o_2c__1 if result.dup__of_op__o_2c__1 is defined and result.dup__of_op__o_2c__1 != None and result.dup__of_op__o_2c__1 != "" else ' - ' }}</span> para 
-                                <span id="nova-dup__of_op__o_2c__1" class="badge bg-primary"></span>
+                                {% if not result.dup__of_op__o_2c__1 or result.dup__of_op__o_2c__1|string|trim in ["", '""'] %}
+                                    Nova Opção 3A: <span id="nova-dup__of_op__o_2c__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 3A foi alterada de 
+                                    <span id="original-dup__of_op__o_2c__1" class="badge bg-secondary">{{ result.dup__of_op__o_2c__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_2c__1" class="badge bg-primary"></span>
+                                {% endif %}
+                            </p>
+
+                            <p id="resumo-dup__of_op__o_3a__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {% if not result.dup__of_op__o_3a__1 or result.dup__of_op__o_3a__1|string|trim in ["", '""'] %}
+                                    Nova Opção 3B: <span id="nova-dup__of_op__o_3a__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 3B foi alterada de 
+                                    <span id="original-dup__of_op__o_3a__1" class="badge bg-secondary">{{ result.dup__of_op__o_3a__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_3a__1" class="badge bg-primary"></span>
+                                {% endif %}
+                            </p>
+
+                            <p id="resumo-dup__of_op__o_3b__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {% if not result.dup__of_op__o_3b__1 or result.dup__of_op__o_3b__1|string|trim in ["", '""'] %}
+                                    Nova Opção 3C: <span id="nova-dup__of_op__o_3b__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 3C foi alterada de 
+                                    <span id="original-dup__of_op__o_3b__1" class="badge bg-secondary">{{ result.dup__of_op__o_3b__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_3b__1" class="badge bg-primary"></span>
+                                {% endif %}
                             </p>
                             
                             <p id="resumo-dup__of_op__o_3c9__1" class="mudanca-item" style="display: none">
                                 <i class="fas fa-check-circle text-success me-2"></i>
-                                Opção 4A foi alterada de 
-                                <span id="original-dup__of_op__o_3c9__1" class="badge bg-secondary">{{ result.dup__of_op__o_3c9__1 if result.dup__of_op__o_3c9__1 is defined and result.dup__of_op__o_3c9__1 != None and result.dup__of_op__o_3c9__1 != "" else ' - ' }}</span> para 
-                                <span id="nova-dup__of_op__o_3c9__1" class="badge bg-primary"></span>
+                                {% if not result.dup__of_op__o_3c9__1 or result.dup__of_op__o_3c9__1|string|trim in ["", '""'] %}
+                                    Nova Opção 4A: <span id="nova-dup__of_op__o_3c9__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 4A foi alterada de 
+                                    <span id="original-dup__of_op__o_3c9__1" class="badge bg-secondary">{{ result.dup__of_op__o_3c9__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_3c9__1" class="badge bg-primary"></span>
+                                {% endif %}
+                            </p>
+
+                            <p id="resumo-dup__of_op__o_3c4__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {% if not result.dup__of_op__o_3c4__1 or result.dup__of_op__o_3c4__1|string|trim in ["", '""'] %}
+                                    Nova Opção 4B: <span id="nova-dup__of_op__o_3c4__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 4B foi alterada de 
+                                    <span id="original-dup__of_op__o_3c4__1" class="badge bg-secondary">{{ result.dup__of_op__o_3c4__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_3c4__1" class="badge bg-primary"></span>
+                                {% endif %}
+                            </p>
+
+                            <p id="resumo-dup__of_op__o_3c__1" class="mudanca-item" style="display: none">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {% if not result.dup__of_op__o_3c__1 or result.dup__of_op__o_3c__1|string|trim in ["", '""'] %}
+                                    Nova Opção 4C: <span id="nova-dup__of_op__o_3c__1" class="badge bg-primary"></span>
+                                {% else %}
+                                    Opção 4C foi alterada de 
+                                    <span id="original-dup__of_op__o_3c__1" class="badge bg-secondary">{{ result.dup__of_op__o_3c__1 }}</span> para 
+                                    <span id="nova-dup__of_op__o_3c__1" class="badge bg-primary"></span>
+                                {% endif %}
                             </p>
                             
                             <p id="sem-mudancas" class="text-muted font-italic">
