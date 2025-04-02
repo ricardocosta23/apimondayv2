@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-br" data-bs-theme="dark">
 <head>
+  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Readequação - Monday.com</title>
+    <title>Readequação - Monday.com</title>
     
     <!-- Bootstrap CSS from Replit CDN -->
     <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
@@ -20,22 +21,53 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
+    <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+    <a class="navbar-brand p-0" href="{{ url_for('home') }}">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo Esquerdo" height="70" class="d-inline-block">
+    </a>
+    <a href="#" class="p-0">
+    <img src="{{ url_for('static', filename='mondaylogo.png') }}" alt="Logo Direito" height="100" class="d-inline-block">
+    </a>
+    </div>
+
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+    <li class="nav-item">
+    <a class="nav-link active" href="{{ url_for('readequacao') }}"></a>
+    </li>
+    </ul>
+    </div>
+    </div>
+
+    </nav>
+    <br>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand" href="{{ url_for('home') }}">
-                <i class="fas fa-sync-alt me-2"></i>Sistema de Readequação
+                <span style="font-size: 1.5em;">Readequação de Projetos</span>
             </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('readequacao') }}">Readequação</a>
+                        <a class="nav-link active" href="{{ url_for('readequacao') }}"></a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+
+   
 
     <div class="container my-4">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -54,7 +86,7 @@
 
     <footer class="footer mt-auto py-3 bg-dark">
         <div class="container text-center">
-            <span class="text-muted">© 2024 Sistema de Readequação - Monday.com Integration</span>
+            <span class="text-muted">2025 Sistema de Readequação - Monday.com </span>
         </div>
     </footer>
 
@@ -63,7 +95,7 @@
     
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+    <script src="{{ url_for('static', filename='js/flatpickr/l10n/pt.js') }}"></script>
     
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
