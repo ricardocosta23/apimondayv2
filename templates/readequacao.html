@@ -3,6 +3,15 @@
 {% block content %}
 
 
+<style
+.file-upload-wrapper { /* ... */ }
+.file-upload-wrapper.dragover { /* ... */ }
+.file-upload-wrapper input[type="file"] { /* ... */ }
+.file-upload-text { /* ... */ }
+.form-label { /* ... */ }>
+    </style>
+
+
 <div class="card shadow">
     <div class="card-header bg-primary text-white">
         <h3><i class="fas fa-search me-2"></i>Buscar Negócio</h3>
@@ -378,11 +387,20 @@
 
                 <div class="col-md-12 mt-3">
                     <div class="form-group mb-3">
-                        <label for="file" class="form-label">Anexar PDF Readequação</label>
-                        <input type="file" class="form-control" id="file" name="file">
+                        
+                        <div class="file-upload-wrapper">
+                            
+                                
+                                
+                            </div>
+                            <input type="file" class="form-control" id="file" name="file">
+                        </div>
                         <small class="form-text text-muted">Formato aceito: PDF. Tamanho máximo: 16MB.</small>
                     </div>
                 </div>
+
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
                
                 <!-- Resumo de mudanças section -->
                 <div class="col-md-12 mt-4">
