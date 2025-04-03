@@ -8,7 +8,7 @@ import json
 from werkzeug.utils import secure_filename
 from utils.monday_api import get_monday_data, update_monday_item
 from utils.date_formatter import formatar_data, convert_date_to_monday_format
-import pandas as pd
+import pandas as pd 
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -240,6 +240,66 @@ def submit_readequacao():
         if novaOpcao4C and novaOpcao4C != "None":
             column_values["dup__of_op__o_3c__1"] = novaOpcao4C
 
+        # Generate a summary of changes for texto_longo_17__1 column
+        summary_text = "Resumo das Mudanças:\n\n"
+        changes_found = False
+        
+        # Check for date changes
+        original_data__1 = request.form.get('original_data__1')
+        if novaDataEntregaAEREO and novaDataEntregaAEREO != "None" and novaDataEntregaAEREO != original_data__1:
+            summary_text += f"- Data de entrega AÉREO foi alterada de {original_data__1 or '-'} para {novaDataEntregaAEREO}\n"
+            changes_found = True
+            
+        original_date9__1 = request.form.get('original_date9__1')
+        if novaDataEntregaTERRESTRE and novaDataEntregaTERRESTRE != "None" and novaDataEntregaTERRESTRE != original_date9__1:
+            summary_text += f"- Data de entrega TERRESTRE foi alterada de {original_date9__1 or '-'} para {novaDataEntregaTERRESTRE}\n"
+            changes_found = True
+            
+        original_date3__1 = request.form.get('original_date3__1')
+        if novaDataEntregaCRIACAO and novaDataEntregaCRIACAO != "None" and novaDataEntregaCRIACAO != original_date3__1:
+            summary_text += f"- Data de entrega CRIAÇÃO foi alterada de {original_date3__1 or '-'} para {novaDataEntregaCRIACAO}\n"
+            changes_found = True
+            
+        original_date7__1 = request.form.get('original_date7__1')
+        if novaDataEntregaSALES and novaDataEntregaSALES != "None" and novaDataEntregaSALES != original_date7__1:
+            summary_text += f"- Data de entrega SALES foi alterada de {original_date7__1 or '-'} para {novaDataEntregaSALES}\n"
+            changes_found = True
+            
+        # Check for option changes
+        original_texto16__1 = request.form.get('original_texto16__1')
+        if novaOpcao1A and novaOpcao1A != "None" and novaOpcao1A != original_texto16__1:
+            summary_text += f"- Opção 1A foi alterada de {original_texto16__1 or '-'} para {novaOpcao1A}\n"
+            changes_found = True
+            
+        # Add more options following the same pattern
+        original_dup__of_op__o_1c0__1 = request.form.get('original_dup__of_op__o_1c0__1')
+        if novaOpcao2A and novaOpcao2A != "None" and novaOpcao2A != original_dup__of_op__o_1c0__1:
+            summary_text += f"- Opção 2A foi alterada de {original_dup__of_op__o_1c0__1 or '-'} para {novaOpcao2A}\n"
+            changes_found = True
+            
+        original_dup__of_op__o_2c__1 = request.form.get('original_dup__of_op__o_2c__1')
+        if novaOpcao3A and novaOpcao3A != "None" and novaOpcao3A != original_dup__of_op__o_2c__1:
+            summary_text += f"- Opção 3A foi alterada de {original_dup__of_op__o_2c__1 or '-'} para {novaOpcao3A}\n"
+            changes_found = True
+        
+        # If no changes found, note that in the summary
+        if not changes_found:
+            summary_text += "Nenhuma alteração foi realizada."
+        
+        # Add this summary to the texto_longo_17__1 column
+        if changes_found:
+            # Long text columns in Monday.com need a specific format with the "text" property
+            column_values["texto_longo_17__1"] = {"text": summary_text}
+            logger.info(f"Generated change summary for texto_longo_17__1 column: {summary_text}")
+        
+        # Add note about file upload if a file was provided
+        if file and allowed_file(file.filename):
+            file_text = f"\n\nArquivo anexado: {file.filename}"
+            if "texto_longo_17__1" in column_values:
+                column_values["texto_longo_17__1"]["text"] += file_text
+            else:
+                column_values["texto_longo_17__1"] = {"text": f"Resumo das Mudanças:\n\nArquivo anexado: {file.filename}"}
+        
         # Update the item in Monday.com
         logger.debug(f"Updating item with column values: {column_values}")
         update_result = update_monday_item(item_id, MONDAY_BOARD_ID, column_values, API_KEY, API_URL)
@@ -255,7 +315,7 @@ def submit_readequacao():
                 # Use the same API_KEY that's already defined at the top of the file
                 try:
                     # Save file temporarily
-                    temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+                    temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp')
                     os.makedirs(temp_dir, exist_ok=True)
                     temp_path = os.path.join(temp_dir, filename)
                     file.save(temp_path)
