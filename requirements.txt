@@ -2,6 +2,4 @@ Flask
 requests
 gunicorn
 Werkzeug
-logging  
-datetime 
 pandas
