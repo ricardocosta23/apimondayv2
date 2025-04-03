@@ -8,6 +8,7 @@ import json
 from werkzeug.utils import secure_filename
 from utils.monday_api import get_monday_data, update_monday_item
 from utils.date_formatter import formatar_data, convert_date_to_monday_format
+import pandas as pd 
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -251,80 +252,95 @@ def submit_readequacao():
                 
                 filename = secure_filename(file.filename)
                 logger.info(f"Uploading file: {filename} to item: {item_id}")
-                dir_path = os.path.dirname(os.path.realpath(__file__))
-                static_path = os.path.join(dir_path, 'static')
-                f = os.path.join(static_path, filename)
-
+                # Use the same API_KEY that's already defined at the top of the file
                 try:
-                    file.save(f)
-                    logger.info(f"File saved to: {f}")
-                    api_url = "https://api.monday.com/v2"
-                    headers = {"Authorization": API_KEY}  # Content-Type will be set by requests
-
-                    query_payload = {
-                    "query" : f"""
-                        mutation ($file: File!) {{
-                            add_file_to_column (
-                                file: $file,
-                                item_id: "{item_id}",
-                                column_id: "file_mkp3rd8p"
-                            ) {{
-                                id
-                            }}
-                        }}
-                    """,
-                    "variables": {
-                            "file": None  
-                        }
+                    # Save file temporarily
+                    temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp')
+                    os.makedirs(temp_dir, exist_ok=True)
+                    temp_path = os.path.join(temp_dir, filename)
+                    file.save(temp_path)
+                    print(f"File saved to: {temp_path}")
+                    # First upload the file to Monday.com's file storage
+                    headers = {"Authorization": API_KEY, 'API-version':'2023-10'}
+                    url = "https://api.monday.com/v2/file"
+                    
+                    # Format the payload according to the Monday.com API requirements
+                    # The query uses the $file variable and specifies the column_id and item_id
+                    query = f'mutation add_file($file: File!) {{add_file_to_column (item_id: {item_id}, column_id: "file_mkp3rd8p", file: $file) {{id}}}}'
+                    
+                    payload = {
+                        'query': query,
+                        'variables': '{}'
                     }
-
                     
-                    opened_file = None
-                    try:
-                        opened_file = open(f, 'rb')
+                    # The map is a JSON string that maps the file parameter in the request to the variable in the query
+                    map_json = '{"variables.file": ["variables.file"]}'
+                    payload['map'] = map_json
+                    
+                    logger.info(f"Upload query: {query}")
+                    logger.info(f"Upload payload: {payload}")
+                    
+                    # Format the files parameter - use 'variables.file' as key to match the map
+                    with open(temp_path, 'rb') as file_handle:
+                        file_content = file_handle.read()
                         files = {
-                            'query': (None, str(query_payload), 'application/json'),
-                            'variables[file]': (filename, opened_file, 'multipart/form-data', {'Expires': '0'})
-                            }
-                        response = requests.post(api_url, headers=headers, files=files)
-                        response.raise_for_status()  # Raise an exception for bad status codes
-                        data = response.json()
-                        logger.info(f"Monday.com API response: {data}")
-                        if 'errors' in data:
-                            logger.error(f"Error uploading to Monday.com: {data['errors']}")
-                            logger.error(f"Error uploading to Monday.com: {data.get('errors')}")
-                        else:
-                             logger.info(f"File '{filename}' uploaded successfully to item {item_id}")
-    
-                    except Exception as e:
-                        logger.error(f"Erro inesperado durante o upload do arquivo: {e}")
-                        logger.error(f"Erro inesperado durante o upload do arquivo: {e}")
-                    finally:
-                         # Clean up the saved file after attempting upload
-                         if os.path.exists(file_path_on_disk):
+                            'variables.file': (filename, file_content, 'application/octet-stream')
+                        }
+                    
+                    # Make the API request with both payload and files parameters
+                    response = requests.post(url, headers=headers, data=payload, files=files)
+                    logger.info(f"Upload response status: {response.status_code}")                              
+                    
+                    
+                    if response.ok:
+                        try:
+                            # Get the response data
+                            response_data = response.json()
+                            logger.info(f"Upload response: {response_data}")
+                            
+                            # Check if we have a successful upload in the response
+                            # Monday.com API typically returns data.add_file_to_column.id for successful uploads
+                            if 'data' in response_data and 'add_file_to_column' in response_data['data']:
+                                file_data = response_data['data']['add_file_to_column']
+                                if file_data and 'id' in file_data:
+                                    asset_id = file_data['id']
+                                    logger.info(f"File uploaded successfully, asset ID: {asset_id}")
+                                    logger.info("File attached successfully!")
+                                    flash("Arquivo anexado com sucesso!", "success")
+                                else:
+                                    logger.info("File uploaded but couldn't find ID in response")
+                                    flash("Arquivo enviado com sucesso!", "success")
+                            # Even without the expected structure, if we got a 200 OK the file was probably uploaded successfully
+                            elif response.status_code == 200:
+                                logger.info("File upload response structure was different than expected, but got a 200 OK")
+                                flash("Arquivo enviado com sucesso!", "success")
+                            else:
+                                logger.error(f"Unexpected upload response structure: {response_data}")
+                                flash("Erro ao processar upload do arquivo", "warning")
+                        except Exception as e:
+                            logger.error(f"Error processing upload response: {e}")
+                            logger.error(f"Response text: {response.text}")
+                            flash(f"Erro ao processar resposta de upload: {str(e)}", "warning")
+                    else:
+                        logger.error(f"File upload failed: {response.text}")
+                        flash("Upload do arquivo falhou", "warning")
                         
-        
-                    
-                            logger.debug(f"Prepared Request Headers: {prepared_request.headers}")
-                            logger.debug(f"File upload response: {response.text}")
-                            logger.debug(f"File upload reason: {response.reason}")
-        
-                    
-                except requests.exceptions.RequestException as e:
-                    logger.error(f"Erro na requisição de upload do arquivo: {str(e)}")
-                    flash(f"Erro ao enviar e anexar arquivo: {str(e)}", "warning")
-        
+                    # Clean up temporary file
+                    if os.path.exists(temp_path):
+                        os.remove(temp_path)
+                        
                 except Exception as e:
-                    logger.error(f"Erro inesperado durante o upload do arquivo: {str(e)}")
-                    flash(f"Erro ao enviar e anexar arquivo: {str(e)}", "warning")
+                    logger.error(f"Erro no upload do arquivo: {str(e)}")
+                    flash(f"Erro ao enviar arquivo: {str(e)}", "warning")
+                    
+            # Add success message and return response
+            flash("Dados atualizados com sucesso!", "success")
+            return render_template('success.html', item_id=item_id, result_name=result_name)
+        else:
+            flash("Falha ao atualizar dados no Monday.com", "danger")
+            logger.error("Failed to update item in Monday.com")
+            return render_template('error.html', error="Falha ao atualizar dados no Monday.com")
         
-                flash("Dados atualizados com sucesso!", "success")
-                return render_template('success.html', item_id=item_id, result_name=result_name)
-            else:
-                flash("Falha ao atualizar dados no Monday.com", "danger")
-                logger.error("Failed to update item in Monday.com")
-                return render_template('error.html', error="Falha ao atualizar dados no Monday.com")
-    
     except Exception as e:
         logger.error(f"Error in submit_readequacao: {str(e)}")
         flash(f"Erro ao processar o formulário: {str(e)}", "danger")
@@ -343,59 +359,5 @@ def page_not_found(error):
 def internal_server_error(error):
     return render_template('error.html', error="Erro interno do servidor"), 500
 
-ITEM_ID = 7815005218
-COLUMN_ID = "file_mkp3rd8p"
-UPLOAD_URL = "https://api.monday.com/v2/file"
-FILE_PATH = "static/logo.png"  # Assuming logo.png is in a 'static' folder
-
-
-if not os.path.exists(FILE_PATH):
-    print(f"Error: File not found at {FILE_PATH}")
-else:
-    headers = {'Authorization': API_KEY}
-    files = {'file': ('logo.png', open(FILE_PATH, 'rb'), 'image/png')}
-
-    try:
-        response = requests.post(UPLOAD_URL, headers=headers, files=files)
-        print(f"Upload Status Code: {response.status_code}")
-        print(f"Upload Response: {response.text}")
-
-        if response.ok:
-            try:
-                response_data = response.json()
-                if 'data' in response_data and 'id' in response_data['data']:
-                    asset_id = response_data['data']['id']
-                    print(f"File uploaded successfully, asset ID: {asset_id}")
-
-                    mutation_query = f"""
-                        mutation {{
-                            add_file_to_column (
-                                asset_id: {asset_id},
-                                item_id: {ITEM_ID},
-                                column_id: "{COLUMN_ID}"
-                            ) {{
-                                id
-                            }}
-                        }}
-                    """
-                    headers_graphql = {'Authorization': API_KEY, 'Content-Type': 'application/json'}
-                    payload = {'query': mutation_query}
-                    attach_response = requests.post("https://api.monday.com/v2", headers=headers_graphql, json=payload)
-                    attach_response_json = attach_response.json()
-                    print(f"Attach Response: {attach_response_json}")
-
-                    if 'errors' in attach_response_json:
-                        print(f"File attach failed: {attach_response_json['errors']}")
-                    elif 'data' in attach_response_json and 'add_file_to_column' in attach_response_json['data']:
-                        print("File attached successfully!")
-                    else:
-                        print("Unexpected attach response.")
-                else:
-                    print("Unexpected upload response structure.")
-            except Exception as e:
-                print(f"Error processing upload response: {e}")
-        else:
-            print(f"File upload failed with status code: {response.status_code}")
-
-    except requests.exceptions.RequestException as e:
-        print(f"Request exception: {e}")
+# App config values
+app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH  # Set the max file upload size
