@@ -8,7 +8,7 @@ import json
 from werkzeug.utils import secure_filename
 from utils.monday_api import get_monday_data, update_monday_item
 from utils.date_formatter import formatar_data, convert_date_to_monday_format
-import pandas as pd 
+import pandas as pd
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
