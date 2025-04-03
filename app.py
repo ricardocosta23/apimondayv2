@@ -315,7 +315,7 @@ def submit_readequacao():
                 # Use the same API_KEY that's already defined at the top of the file
                 try:
                     # Save file temporarily
-                    temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp')
+                    temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
                     os.makedirs(temp_dir, exist_ok=True)
                     temp_path = os.path.join(temp_dir, filename)
                     file.save(temp_path)
